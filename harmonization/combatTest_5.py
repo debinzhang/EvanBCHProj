@@ -94,7 +94,6 @@ def extractDataSet(path, filename):
     return genderList_, scannerList_, headline_, extractedDataDir_
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd:  honey_real_1.py -s . -f lh.aparc.stats -d ./dataset')
   parser = argparse.ArgumentParser(description='Example cmd:  combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1')
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains Harmonization_meta_data.csv file')
   parser.add_argument('-f', '--filename', default='Harmonization_meta_data.csv', help='Harmonization meta data file')
