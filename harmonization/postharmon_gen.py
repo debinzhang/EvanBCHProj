@@ -67,7 +67,7 @@ def extractDataSet(path, filename):
     return genderList_, scannerList_, headline_, extractedDataDir_
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd:  postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV')
+  parser = argparse.ArgumentParser(description='Example cmd:  python3 ./postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV')
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains Harmonization_meta_data.csv file')
   parser.add_argument('-f', '--filename', default='Harmonization_meta_data.csv', help='Harmonization meta data file')
   parser.add_argument('-n', '--fieldname', default='ICV', help="fieldname such as ICV")

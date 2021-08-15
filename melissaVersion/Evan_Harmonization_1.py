@@ -32,7 +32,7 @@ def try_float(v):
        return -1
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd:  Evan_Harmonization_1.py -s GausCurve')
+  parser = argparse.ArgumentParser(description='Example cmd:  python3 ./Evan_Harmonization_1.py -s GausCurve')
   parser.add_argument('-s', '--structname', default='GausCurve', help='structname, such as GausCurve or ThickAvg')
   args = parser.parse_args()
 

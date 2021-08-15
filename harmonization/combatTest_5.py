@@ -91,7 +91,7 @@ def extractDataSet(path, filename):
     return genderList_, scannerList_, headline_, extractedDataDir_
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd:  combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1')
+  parser = argparse.ArgumentParser(description='Example cmd:  python3 ./combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1')
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains Harmonization_meta_data.csv file')
   parser.add_argument('-f', '--filename', default='Harmonization_meta_data.csv', help='Harmonization meta data file')
   parser.add_argument('-p', '--plotnum', type=int, default=1, help='how many harmonizied pictures to plot')
