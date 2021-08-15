@@ -6,7 +6,7 @@ This repo contains the scripts and data for Evan's Boston Child Hospital image p
 
 	The script, honey_real_1.py, searches all the stats files under the root_dir to generate  a list of csv files; one for a fieldname. The following is the command to run the script:
 	
-		python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./dataset***
+		python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./dataset
 	
 	
 2. harmonization
@@ -36,7 +36,7 @@ to specify how many pictures you want to paint. The default number is one.
 
 	The following is the command to run the script:
 
-		python3 ./combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1*
+		python3 ./combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1
 		
 		
 	Another script,  postharmon_gen.py, generates a single PostHarmon_xxx.csv file
@@ -45,7 +45,7 @@ So it needs to be run after running combatTest_5.py script, which generates gen_
 
 	The following is the command to run the script:
 
-		*postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV*	
+		postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV	
 
 3. melissaVersion
 
