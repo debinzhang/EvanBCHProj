@@ -6,7 +6,7 @@ This repo contains the scripts and data for Evan's Boston Child Hospital image p
 
 	The script, honey_real_1.py, searches all the stats files under the root_dir to generate  a list of csv files; one for a fieldname. The following is the command to run the script:
 	
-		python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./dataset
+		python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./Dataset.csv
 	
 	
 2. harmonization
