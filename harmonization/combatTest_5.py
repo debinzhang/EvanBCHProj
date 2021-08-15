@@ -1,6 +1,3 @@
-#!/usr/bin/python3
-
-
 from neuroCombat import neuroCombat
 import pandas as pd
 import numpy as np
