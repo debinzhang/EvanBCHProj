@@ -1,0 +1,93 @@
+#!/usr/bin/python3
+
+
+from neuroCombat import neuroCombat
+import pandas as pd
+import numpy as np
+
+# Getting example data
+# 200 rows (features) and 10 columns (scans)
+data = np.genfromtxt('./HarmonizationInputMelissa.csv', delimiter=",",skip_header = 0)
+# data = np.genfromtxt('testdata/testdata.csv', delimiter=",", skip_header=1)
+
+
+# Specifying the batch (scanner variable) as well as a biological covariate to preserve:
+# df = pd.read_csv("HarmonizationInputMelissa.csv")
+file = open("HarmonizationDemographicsMelissa.csv" ,'r')
+scannerList = []
+genderList = []
+FOSList = []
+lines = file.readlines()
+for line in lines:
+    if "#" in line:
+        continue
+    ll = line.split(",")
+    if ll[1] == "M":
+        genderList.append(0)
+    elif ll[1] == "F":
+        genderList.append(1)
+    else: 
+        genderList.append(2)
+    if ll[2] == "1.5T":
+        FOSList.append(0)
+    elif ll[2] == "3T":
+        FOSList.append(1)
+    else: 
+        FOSList.append(2)
+    if "siemens" in ll[3] or "SIEMENS" in ll[3] or "Siemens" in ll[3]:
+        scannerList.append(0)
+    elif "phillips" in ll[3] or "PHILLIPS" in ll[3] or "Phillips" in ll[3]:
+        scannerList.append(1)
+    elif "GE" in ll[3]:
+        scannerList.append(2)
+    else: 
+        scannerList.append(3)
+
+print("scannerList: %d " % len(scannerList))
+print(scannerList)
+print("genderList: %d" % len(genderList))
+print(genderList)
+print('--------------')
+
+#for x in range(len(scannerList)):
+    #print(scannerList[x])
+
+# for x in range(len(genderList)):
+    # print(genderList[x])
+
+covars = {'batch':scannerList,
+          'gender':genderList}
+
+# covars = {'batch':[1,1,1],
+#           'gender':[1,2,1]} 
+covars = pd.DataFrame(covars)  
+
+# To specify names of the variables that are categorical:
+categorical_cols = ['gender']
+
+# To specify the name of the variable that encodes for the scanner/batch covariate:
+batch_col = 'batch'
+
+# To specify FOS of Scanner
+# FOS_col = ['FOS']
+
+#Harmonization step:
+data_combat = neuroCombat(dat=data,
+    covars=covars,
+    batch_col=batch_col,
+    categorical_cols=categorical_cols)["data"]
+
+print(data_combat[0])
+with open("./PostHarmonizationBrainVolume.csv", "w") as f:
+    for i in range(len(data_combat[0])):
+        f.write("%f\n" % data_combat[0][i])
+
+print(" -------------------------------")
+
+# data_estimates = neuroCombat(dat=data,
+#     covars=covars,
+#     batch_col=batch_col,
+#     categorical_cols=categorical_cols)["estimates"]
+
+# print("data_combat.estimates: ")
+# print(data_estimates)
