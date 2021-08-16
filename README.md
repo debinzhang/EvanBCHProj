@@ -45,7 +45,7 @@ So it needs to be run after running combatTest_5.py script, which generates gen_
 
 	The following is the command to run the script:
 
-		postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV	
+		python3 ./postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV	
 
 3. melissaVersion
 
