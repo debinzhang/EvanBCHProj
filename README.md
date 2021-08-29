@@ -6,8 +6,30 @@ This repo contains the scripts and data for Evan's Boston Child Hospital image p
 
 	The script, honey_real_1.py, searches all the stats files under the root_dir to generate  a list of csv files; one for a fieldname. The following is the command to run the script:
 	
-		python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./Dataset.csv
-	
+		python ./honey_real_1.py -s "." -f lh.aparc.stats -d ./Dataset.csv
+
+The source directory, can be a directory list, such as 
+"/neuro/labs/grantlab/research/MRI_Predict_Age/MGH/, /neuro/labs/grantlab/research/MRI_Predict_Age/BGSP"
+
+This script combines the information from Dataset.csv file and *.stats file,
+and generates per struct, such as SurfArea and GrayVol, csv files. From the dataset file, we get the subjectID, Age, Sex, Scanner-type, magnetic field strength,
+then we use the subjectID as the key to search the corresponding patient's stats file
+the subjectID resides in the directory path of the patient's stats file. For example, the 
+directory name may be IXI313-HH-2241-T1. Here IXI313 is the patient's subjectID.
+the directory name may also be in the form of deface_subjId1_subjId2_xxx, in this case
+the final subjectId is "subjId1_subjId2".
+
+After located the subjectID directory, we start to search the stats file within it. The status 
+file is structed as multiple columns and rows, such as
+
+ColHeaders StructName NumVert SurfArea GrayVol ThickAvg ThickStd MeanCurv GausCurv FoldInd CurvInd
+bankssts                                 1407    933   2328  2.631 0.397     0.085     0.015        6     0.9
+audalanteriorcingulate                   645    449   1291  2.624 0.572     0.124     0.028        9     0.9
+
+where each row is for a surface area like "bankssts" or "audalanteriorcingulate ", 
+and each column is for a fieldname, such as "NumVert" or "SurfArea "
+
+This script generates multiple .csv files, one for each field, such as "NumVert.csv" and "SurfArea.csv". Each row of the generated file maps to a user info field or a surfaceArea, such as "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts", "caudalanteriorcingulate". Each column is for a patient.
 	
 2. harmonization
 
@@ -25,10 +47,9 @@ each column is a for a patient. So for the above Hamonization_meta_data.csv inpu
 
 	The 2nd generated file, PostHarmon_Vermis.csv, contains the following columns: 
 "#,Age,Vermis,Dataset"
-and 6048 subsequent rows, with one row for a patient
-The first column "#" is a sequence number starting from 1
-the Dataset information is extracted from the "Path" field from the 
-generated gen_structname.csv file. For example the "ABIDE_I" dataset is from the
+and 6048 subsequent rows, with one row for a patient.
+The first column "#" is a sequence number starting from 1.
+The Dataset information is extracted from the "Path" field from the generated gen_structname.csv file. For example the "ABIDE_I" dataset is from the
 /neuro/labs/grantlab/research/MRI_Predict_Age/ABIDE_I/2NIFTI_SS_SEG_RAVENS/ Path
 
 	This script can also plot harmonization pictures. Used command line option "-p "
@@ -36,16 +57,16 @@ to specify how many pictures you want to paint. The default number is one.
 
 	The following is the command to run the script:
 
-		python3 ./combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1
+		python ./combatTest_5.py -s . -f Harmonization_meta_data.csv -p 1
 		
 		
-	Another script,  postharmon_gen.py, generates a single PostHarmon_xxx.csv file
-The script assume the corresponding gen_xxx.csv had been created.
+	Another script,  postharmon_gen.py, generates a single PostHarmon_xxx.csv file.
+The script assumes the corresponding gen_xxx.csv had been created.
 So it needs to be run after running combatTest_5.py script, which generates gen_xxx.csv
 
 	The following is the command to run the script:
 
-		python3 ./postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV	
+		python ./postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV	
 
 3. melissaVersion
 
