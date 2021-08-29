@@ -118,7 +118,6 @@ def main():
   finalMegeredDataDic = {}
   genFilePrefix = ''
 
-  print("xxxxxx")
   if args.filename == 'lh.aparc.stats':
     genFilePrefix = 'lh_';
   elif args.filename == 'rh.aparc.stats':
