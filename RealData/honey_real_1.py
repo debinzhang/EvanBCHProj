@@ -127,94 +127,108 @@ def main():
   print("datasetHeadline: ")
   print(datasetHeadline)
 
-  for path, subdirs, files in os.walk(args.sourcedir):
-    for name in files:
-      if args.filename in name and name.endswith(".stats"):
-        print("stats file: %s/%s" %  (path, name))
+  sourcedirStr = args.sourcedir.replace(" ", "") # remove all blank characters
+  sourcedirList = sourcedirStr.split(',')
+  for sourcedir in sourcedirList:
+    print("Working on %s directory" % sourcedir)
+    for path, subdirs, files in os.walk(sourcedir):
+      for name in files:
+        if args.filename in name and name.endswith(".stats"):
+          print("stats file: %s/%s" %  (path, name))
 
-        # find the directory name that contains subjectId, which is right before the stats dir
-        # like: /IXI21009-Guys-0894-T1/stats/
-        try:
-          dirlist = path.split('/')
-          subjIdDirName = dirlist[dirlist.index('stats')-1]
-        except ValueError:
-          print("Cannot find the directory name  that contains subjId before stats dir")
-          continue
+          # find the directory name that contains subjectId, which is right before the stats dir
+          # like: /IXI21009-Guys-0894-T1/stats/
+          try:
+            dirlist = path.split('/')
+            subjIdDirName = dirlist[dirlist.index('stats')-1]
+          except ValueError:
+            print("Cannot find the directory name  that contains subjId before stats dir")
+            continue
 
-        # print("subjIdDirName %s" % subjIdDirName)
+          # print("subjIdDirName %s" % subjIdDirName)
 
-        # get subjId from stats file path
-        try:
-          #subjId = 'unknown'
-          if "deface" in path: #if path start with "deface", the path format is deface_subjId1_subjId2_xxx
-            pathlist = subjIdDirName.split('_')
-            subjId = pathlist[1]+"_"+pathlist[2]
-          elif '-' in path: # for that rest path, it is formated either like subjid-xxx-yyy or subjid_xxx_yyy
-            pathlist = re.split('-|_', subjIdDirName)
-            subjId = pathlist[0]
+          # get subjId from stats file path
+          try:
+            #subjId = 'unknown'
+            if "deface" in path: #if path start with "deface", the path format is deface_subjId1_subjId2_xxx
+              pathlist = subjIdDirName.split('_')
+              subjId = pathlist[1]+"_"+pathlist[2]
+            # for path like ./MGH/3NIFTI_FreeSurfer/HIE_122-VISIT_01-SAGMPRAGE_P2_1MM/stats/rh.aparc.stats
+            # its subjId is HIE_122
+            elif "VISIT_" in path and "MGH" in path: 
+              pathlist = re.split('-', subjIdDirName)
+              subjId = pathlist[0]
+            # for path like ./BGSP/3NIFTI_FreeSurfer/Sub1008_Ses1_Scan_01_ANAT1/stats/lh.aparc.stats 
+            # its subjId is Sub1008_Ses1
+            elif "Ses1_Scan" in path and "BGSP" in path:
+              pathlist = re.split('_', subjIdDirName)
+              subjId = pathlist[0]+'_'+pathlist[1]
+            elif '-' in path: # for that rest path, it is formated either like subjid-xxx-yyy or subjid_xxx_yyy
+              pathlist = re.split('-|_', subjIdDirName)
+              subjId = pathlist[0]
+            else:
+              print("Failed to find subjId for path: %" % path)
+          except ValueError:
+            print("cannot find subject ID from subjIdDirName: %s" % subjIdDirName)
+            continue
+
+          print("Got subjId %s from stats file path: %s" % (subjId, subjIdDirName))
+
+          # find the index from subjectIdlist that contains subjectId
+          try:
+            subjIdIndex = subjectIdlist.index(subjId)
+            patientInfo = datasetlist[subjIdIndex]
+          except ValueError:
+            print("cannot find subject ID index for subjId: %s" % subjId)
+            continue  
+
+          print("subjIdIndex: %d" % subjIdIndex)
+          print("patientInfo: ")
+          print(patientInfo)
+
+          statsHeadline, datalines = proc_file(path, name)
+          structNames, datalists = getStructNamesAndDatalist(datasetHeadline, patientInfo, statsHeadline, datalines)
+          if firstFile:
+            # print("1.........")
+            # print(structNames)
+            # print("2.........")
+            # print(datalists)
+
+            firstFileheadline = list(statsHeadline)
+            firstFileStructNames = list(structNames)
+            finalMegeredDatalist = list(datalists)
+            # res = {test_keys[i]: test_values[i] for i in range(len(test_keys))}
+
+            finalMegeredDataDic = {firstFileheadline[i]: [list(datalists[i])] for i in range(len(statsHeadline))}
+            firstFile = False
+            print("firstFile: %s  Headline:" % os.path.join(path, name))
+            print('. '.join(statsHeadline))
+            print("")
+            print("firstFile structNames:")
+            print('. '.join(structNames))
+            print("total row number: %d " % len(structNames))
+            # print("")
+            # print(*datalists, sep=", ")
+            print("----------------------------------------------------")
           else:
-            print("Failed to find subjId for path: %" % path)
-        except ValueError:
-          print("cannot find subject ID from subjIdDirName: %s" % subjIdDirName)
-          continue
+            # print("2nd file")
+            # print("statsHeadline:")
+            # print(statsHeadline)
+            # print("structNames")
+            # print(structNames)
+            # print("***********")
+            # print("firstFileStructNames")
+            # print(firstFileStructNames)
+            # print("$$$")
+            if not firstFileheadline == statsHeadline:
+              print("%s headline is not equal" % os.path.join(path, name))
+              continue
+            if not firstFileStructNames == structNames:
+              print("%s structName is not equal" % os.path.join(path, name))
+              continue
 
-        print("Got subjId %s from stats file path: %s" % (subjId, subjIdDirName))
-
-        # find the index from subjectIdlist that contains subjectId
-        try:
-          subjIdIndex = subjectIdlist.index(subjId)
-          patientInfo = datasetlist[subjIdIndex]
-        except ValueError:
-          print("cannot find subject ID index for subjId: %s" % subjId)
-          continue  
-
-        print("subjIdIndex: %d" % subjIdIndex)
-        print("patientInfo: ")
-        print(patientInfo)
-
-        statsHeadline, datalines = proc_file(path, name)
-        structNames, datalists = getStructNamesAndDatalist(datasetHeadline, patientInfo, statsHeadline, datalines)
-        if firstFile:
-          # print("1.........")
-          # print(structNames)
-          # print("2.........")
-          # print(datalists)
-
-          firstFileheadline = list(statsHeadline)
-          firstFileStructNames = list(structNames)
-          finalMegeredDatalist = list(datalists)
-          # res = {test_keys[i]: test_values[i] for i in range(len(test_keys))}
-
-          finalMegeredDataDic = {firstFileheadline[i]: [list(datalists[i])] for i in range(len(statsHeadline))}
-          firstFile = False
-          print("firstFile: %s  Headline:" % os.path.join(path, name))
-          print('. '.join(statsHeadline))
-          print("")
-          print("firstFile structNames:")
-          print('. '.join(structNames))
-          print("total row number: %d " % len(structNames))
-          # print("")
-          # print(*datalists, sep=", ")
-          print("----------------------------------------------------")
-        else:
-          # print("2nd file")
-          # print("statsHeadline:")
-          # print(statsHeadline)
-          # print("structNames")
-          # print(structNames)
-          # print("***********")
-          # print("firstFileStructNames")
-          # print(firstFileStructNames)
-          # print("$$$")
-          if not firstFileheadline == statsHeadline:
-            print("%s headline is not equal" % os.path.join(path, name))
-            continue
-          if not firstFileStructNames == structNames:
-            print("%s structName is not equal" % os.path.join(path, name))
-            continue
-
-          for i in range(len(firstFileheadline)):
-            finalMegeredDataDic[firstFileheadline[i]].append(list(datalists[i]))
+            for i in range(len(firstFileheadline)):
+              finalMegeredDataDic[firstFileheadline[i]].append(list(datalists[i]))
 
   # print("Going to output files")
   # print(finalMegeredDataDic)
