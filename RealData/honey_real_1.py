@@ -106,7 +106,7 @@ def proc_dataset_file(filepath):
 
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd: python3  ./honey_real_1.py -s . -f lh.aparc.stats -d ./Dataset.csv')
+  parser = argparse.ArgumentParser(description='Example cmd:  python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./dataset')
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains *.stats file')
   parser.add_argument('-f', '--filename', default='lh.aparc.stats', help='stats file name')
   parser.add_argument('-d', '--dataset', default='./Dataset.csv', help='dataset file path and name')
@@ -116,6 +116,13 @@ def main():
   firstFileheadline = []
   firstFileStructNames = []
   finalMegeredDataDic = {}
+  genFilePrefix = ''
+
+  print("xxxxxx")
+  if args.filename == 'lh.aparc.stats':
+    genFilePrefix = 'lh_';
+  elif args.filename == 'rh.aparc.stats':
+    genFilePrefix = 'rh_';
 
   datasetHeadline, subjectIdlist, datasetlist = proc_dataset_file(args.dataset)
   print("datasetHeadline: ")
@@ -182,10 +189,10 @@ def main():
           finalMegeredDataDic = {firstFileheadline[i]: [list(datalists[i])] for i in range(len(statsHeadline))}
           firstFile = False
           print("firstFile: %s  Headline:" % os.path.join(path, name))
-          print(*statsHeadline, sep=", ")
+          print('. '.join(statsHeadline))
           print("")
           print("firstFile structNames:")
-          print(*structNames, sep=", ")
+          print('. '.join(structNames))
           print("total row number: %d " % len(structNames))
           # print("")
           # print(*datalists, sep=", ")
@@ -214,8 +221,8 @@ def main():
   # print(finalMegeredDataDic)
   print("---------------------------------------------------")
   for i in range(len(firstFileheadline)):
-    print("generating %s ..." % (firstFileheadline[i]+'.csv'))
-    with open(firstFileheadline[i]+'.csv', 'w') as f:
+    print("generating %s ..." % (genFilePrefix+firstFileheadline[i]+'.csv'))
+    with open(genFilePrefix+firstFileheadline[i]+'.csv', 'w') as f:
       for j in range(len(firstFileStructNames)):
         #print("Debin: %d" % len(finalMegeredDataDic[firstFileheadline[i]]))
         rowlist = [firstFileStructNames[j]]
