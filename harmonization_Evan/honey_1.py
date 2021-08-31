@@ -6,30 +6,22 @@ import sys
 import argparse
 import pprint
 
-# This script combines the information from Dataset.csv file and *.stats file,
-# and generates per struct, such as SurfArea and GrayVol, csv file
-# From the dataset file, we get the subjectID, Age, Sex, Scanner-type, magnetic field strength
-# then we use the subjectID as the key to search the corresponding patient's stats file
-# the subjectID resides in the directory path of the patient's stats file, for example, the 
-# directory name may be IXI313-HH-2241-T1. Here IXI313 is the patient's subjectID.
-# the directory name may also be in the form of deface_subjId1_subjId2_xxx, in this case
-# the final subjectId is "subjId1_subjId2"
-
-# After located the subjectID directory, we start to search the stats file within it. The status 
-# file is structed as multiple columns and rows, such as
-
-# ColHeaders StructName NumVert SurfArea GrayVol ThickAvg ThickStd MeanCurv GausCurv FoldInd CurvInd
-# bankssts                                 1407    933   2328  2.631 0.397     0.085     0.015        6     0.9
-# audalanteriorcingulate                   645    449   1291  2.624 0.572     0.124     0.028        9     0.9
-
-# where each row is for a surface area like "bankssts" or "audalanteriorcingulate ", 
-# and each column is for a fieldname, such as "NumVert" or "SurfArea "
-
-# This script generates multiple .csv files, one for each field, such as "NumVert.csv" and "SurfArea.csv"
-# Each row of the generated file maps to a user info field or a surfaceArea, such as 
-# "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts", "caudalanteriorcingulate"
-# Each column is a patient
-
+# This script combines the information from Dataset.csv file and *.stats file, and saves the data in a single 
+# combined .csv file. The script works in the following steps:
+# 1. Search all the directories from sourceDir list that users input from commandline for 
+#    the stats file that users specified from cmdline, such as lh.aparc.stats
+# 2. Once such directory is found, get the patient's subjectId from the directory path
+# 3. Use the patient's subjectId as a key to search the dataset.csv file; If an entry is found
+#    get the patient's ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength"
+#    info from the dataset.csv
+# 4. From the patient's stats file (found at step 1), get the surfaceArea list, such as bankssts and caudalanteriorcingulate,
+#    and structName list, such as NumVert and SurfArea, and their corresponding data (it is a two dimention array)
+# 5. Combined patient's dataset data from step 3 and stats data from step, output into the fianl combined csv file
+#    in the final csv file, the first row looks like:
+#    "Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", 
+#    bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"
+#    and the rest of rows are corresponding data
+#    Each row is for a patient
 
 def proc_stats_file(path, name):
     #print("apar_stats_file:%s" % (os.path.join(path, name)))
