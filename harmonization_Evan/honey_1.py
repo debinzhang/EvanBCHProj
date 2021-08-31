@@ -39,18 +39,18 @@ def proc_stats_file(path, name):
     headline = []
     findHeadline = False
 
-    # 
+    # Data from the stats file is saved in statsDict, where the first column name, which is surface
+    # area is the key, and the rest line, which is saved as a list, is the dict value
     statsDict = {}
 
     for line in lines:
       if "#" in line:
         if "ColHeaders" in line:
-          headline = line.split()
+          # headline is in the format of: 
+          #['#', 'ColHeaders', 'StructName', 'NumVert', 'SurfArea', 'GrayVol', 'ThickAvg', 'ThickStd', 'MeanCurv', 'GausCurv', 'FoldInd', 'CurvInd']
+          # we only need the [NumVert', 'SurfArea', 'GrayVol', 'ThickAvg', 'ThickStd', 'MeanCurv', 'GausCurv', 'FoldInd', 'CurvInd']
+          headline = line.split()[3:]
           findHeadline = True
-          # headline looks like:
-          # # ColHeaders StructName NumVert SurfArea GrayVol ThickAvg ThickStd MeanCurv GausCurv FoldInd CurvInd
-          # Remove "# ColHeaders StructName"
-          statsDict["headlist"] = headline[3:]
         else:
           continue
       else:
@@ -64,30 +64,7 @@ def proc_stats_file(path, name):
             continue
           statsDict[linelist[0]] = linelist[1:]
 
-    return statsDict
-
-def getStructNamesAndDatalist(datasetHeadline, patientInfo, headline, datalines):
-  structNames = list(datasetHeadline)
-  datalists = [[]] * len(headline)
-
-  for statsCol in range(len(headline)):
-    datalists[statsCol] = list(patientInfo)
-
-  for row in range(len(datalines)):
-    structNames.append(datalines[row][0])
-    for statsColIndex in range(len(headline)):
-      datalists[statsColIndex].append(datalines[row][statsColIndex+1])
-
-  return structNames, datalists
-
-def mergeDatalist(datalists):
-  # merge datalist, like [[1.0, 2.0,3.0], [5.0, 6.0, 7.0]]
-  # into [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-  mergedDatalist = []
-  for datalist in datalists:
-    mergedDatalist += datalist
-
-  return mergedDatalist
+    return headline, statsDict
 
 def proc_dataset_file(filepath):
   subjIdlist = []
@@ -158,12 +135,28 @@ def main():
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains *.stats file')
   parser.add_argument('-f', '--filename', default='lh.aparc.stats', help='stats file name')
   parser.add_argument('-d', '--dataset', default='./Dataset.csv', help='dataset file path and name')
+  parser.add_argument('-o', '--output', default='./combined_stats.csv', help="final combined output file")
   args = parser.parse_args()
 
   firstFile = True
   firstFileheadline = []
-  firstFileStructNames = []
-  finalMegeredDataDic = {}
+  # the first row of the final output dataset. Should be in the format like:
+  # ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", 
+  # "bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"]
+  # the first 6 column should match patientInfo list
+  outputheadline = ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength"]
+
+  # this is the huge final output data list. Each list item maps to a row in the final output data file
+  # and it is for one patient
+  # Each row should match the above outputheadline. And the list should looks like this:
+  # [ [ 'OASIS_3', 'OAS30502_d395', '52', 'F', 'SiemensTrioTim', '3T', '1367', '941', '2450', ...],
+  #   ...,
+  #   ['Huaxi', '28316', '27', 'F', '', '', '1672', '1145', '3203', ...] ]
+  outputDatalist = []
+
+  # firstFileStructNames = []
+  firstFileSurfaceAreas = []
+  # finalMegeredDataDic = {}
   genFilePrefix = ''
 
   if args.filename == 'lh.aparc.stats':
@@ -232,7 +225,6 @@ def main():
               # its subjId is 4488696
               elif "beijingEn" in path:
                 subjId = subjIdDirName.replace("BJ","").replace("_MPRAGE","")
-                print("Debin !!!! subjId %s" % subjId)
 
               # for path like ./DLBS/3NIFTI_FreeSurfer/0028638-session_1-anat/stats/rh.w-g.pct.stats
               # its subjId is 28638
@@ -285,16 +277,62 @@ def main():
             # find the index from subjectIdlist that contains subjectId
             try:
               subjIdIndex = subjectIdlist.index(subjId)
+              # patientInfo is in the format: ['Dataset', 'subjectId', 'Age', 'Sex', 'Scanner type', 'Magnetic Field Strength']
               patientInfo = datasetlist[subjIdIndex]
             except ValueError:
               print("cannot find subject ID index for subjId: %s" % subjId)
               continue  
 
-            patientCount += 1
             print("subjIdIndex: %d" % subjIdIndex)
-            print("patientInfo: ")
-            print(patientInfo)
-            print("")
+            print("patientInfo: %s\n" % patientInfo)
+
+            # headline: [NumVert', 'SurfArea', 'GrayVol', 'ThickAvg', 'ThickStd', 'MeanCurv', 'GausCurv', 'FoldInd', 'CurvInd']
+            # statsDic: dict with each surfArea as key; and data list, corresponding to headline, as value
+            headline, statsDict = proc_stats_file(path, name)
+            if firstFile:
+              print("headline: %s" % headline)
+              firstFileheadline = headline
+              firstFileSurfaceAreas = statsDict.keys()
+              print("Firstfile headlist length: %d... surf area number: %d\n" % (len(firstFileheadline), len(firstFileSurfaceAreas)))
+              print(firstFileSurfaceAreas)
+              print(outputheadline)
+              for surfArea in firstFileSurfaceAreas:
+                for headItem in firstFileheadline:
+                  outputheadline.append(surfArea+'.'+headItem)
+
+              firstFile = False
+            else:
+              # check if the stats file is in the correct format
+              # if the stats file is not in the same format as the firstFile, we discard it.
+              if not headline == firstFileheadline:
+                print("stats file %s/%s has incompatable headline [%s]. Skip this patient" % (path, name, ', '.join(headline)))
+                continue
+              # else:
+              #   print("headline is the same: %d" % len(headline))
+
+              if not statsDict.keys() == firstFileSurfaceAreas:
+                print("stats file %s/%s has incompatable surfArea list [%s]. Skip this patient" % (path, name, ', '.join(statsDict.keys())))
+                continue
+              # else:
+              #   print("surf areas are the same: with number: %d" % len(statsDict.keys()))
+
+              # passed stats file format checking. Now start to grab data from it
+              # and attach data onto the outputDatalist
+
+            # first get the ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength"] info
+            patientDatalist = list(patientInfo)
+            for surfArea in statsDict.keys():
+              for rowIndex in range(len(firstFileheadline)):
+                patientDatalist.append(statsDict[surfArea][rowIndex])
+
+            # done with this patient. Attach its data to final outputDatalist
+            patientCount += 1
+            outputDatalist.append(patientDatalist)
+
+
+            # print("statsDict:")
+            # pp = pprint.PrettyPrinter(indent=4)
+            # pp.pprint(statsDict)
 
     print("For %s directory, %d patients info found" % (sourcedir, patientCount))
     totalPatientCount += patientCount
@@ -302,67 +340,14 @@ def main():
 
   print("Total patient count %d\n" % totalPatientCount)
 
-          # statsDict = proc_stats_file(path, name)
-          # print("statsDict:")
-          # pp = pprint.PrettyPrinter(indent=4)
-          # pp.pprint(statsDict)
-          # return
+  # output the final combined data sheet
+  with open(args.output, 'w') as f:
+    # output the headline
+    f.write("%s\n" % (','.join(outputheadline)))
+    # output the data rows
+    for row in outputDatalist:
+      f.write("%s\n" % (','.join(row)))
 
-  #         structNames, datalists = getStructNamesAndDatalist(datasetHeadline, patientInfo, statsHeadline, datalines)
-  #         if firstFile:
-  #           # print("1.........")
-  #           # print(structNames)
-  #           # print("2.........")
-  #           # print(datalists)
-
-  #           firstFileheadline = list(statsHeadline)
-  #           firstFileStructNames = list(structNames)
-  #           finalMegeredDatalist = list(datalists)
-  #           # res = {test_keys[i]: test_values[i] for i in range(len(test_keys))}
-
-  #           finalMegeredDataDic = {firstFileheadline[i]: [list(datalists[i])] for i in range(len(statsHeadline))}
-  #           firstFile = False
-  #           print("firstFile: %s  Headline:" % os.path.join(path, name))
-  #           print('. '.join(statsHeadline))
-  #           print("")
-  #           print("firstFile structNames:")
-  #           print('. '.join(structNames))
-  #           print("total row number: %d " % len(structNames))
-  #           # print("")
-  #           # print(*datalists, sep=", ")
-  #           print("----------------------------------------------------")
-  #         else:
-  #           # print("2nd file")
-  #           # print("statsHeadline:")
-  #           # print(statsHeadline)
-  #           # print("structNames")
-  #           # print(structNames)
-  #           # print("***********")
-  #           # print("firstFileStructNames")
-  #           # print(firstFileStructNames)
-  #           # print("$$$")
-  #           if not firstFileheadline == statsHeadline:
-  #             print("%s headline is not equal" % os.path.join(path, name))
-  #             continue
-  #           if not firstFileStructNames == structNames:
-  #             print("%s structName is not equal" % os.path.join(path, name))
-  #             continue
-
-  #           for i in range(len(firstFileheadline)):
-  #             finalMegeredDataDic[firstFileheadline[i]].append(list(datalists[i]))
-
-  # # print("Going to output files")
-  # # print(finalMegeredDataDic)
-  # print("---------------------------------------------------")
-  # for i in range(len(firstFileheadline)):
-  #   print("generating %s ..." % (genFilePrefix+firstFileheadline[i]+'.csv'))
-  #   with open(genFilePrefix+firstFileheadline[i]+'.csv', 'w') as f:
-  #     for j in range(len(firstFileStructNames)):
-  #       #print("Debin: %d" % len(finalMegeredDataDic[firstFileheadline[i]]))
-  #       rowlist = [firstFileStructNames[j]]
-  #       for k in range(len(finalMegeredDataDic[firstFileheadline[i]])):
-  #         rowlist.append(finalMegeredDataDic[firstFileheadline[i]][k][j])
-  #       f.write("%s\n" %(','.join(rowlist)))
 
 if __name__ == '__main__':
   main()
