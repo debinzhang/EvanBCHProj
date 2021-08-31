@@ -1,0 +1,59 @@
+# Table of FreeSurfer cortical parcellation anatomical statistics 
+# 
+# generating_program mris_anatomical_stats
+# cvs_version $Id: mris_anatomical_stats.c,v 1.72 2011/03/02 00:04:26 nicks Exp $
+# mrisurf.c-cvs_version $Id: mrisurf.c,v 1.693.2.7 2013/05/12 22:28:01 nicks Exp $
+# sysname  Linux
+# machine  x86_64
+# 
+# anatomy_type surface
+# subjectname OAS30502_MR_d0395
+# hemi lh
+# AnnotationFile ./lh.BA.annot
+# Measure Cortex, NumVert, Number of Vertices, 133642, unitless
+# Measure Cortex, WhiteSurfArea, White Surface Total Area, 87705.8, mm^2
+# NTableCols 10
+# TableCol  1 ColHeader StructName
+# TableCol  1 FieldName Structure Name
+# TableCol  1 Units     NA
+# TableCol  2 ColHeader NumVert
+# TableCol  2 FieldName Number of Vertices
+# TableCol  2 Units     unitless
+# TableCol  3 ColHeader SurfArea
+# TableCol  3 FieldName Surface Area
+# TableCol  3 Units     mm^2
+# TableCol  4 ColHeader GrayVol
+# TableCol  4 FieldName Gray Matter Volume
+# TableCol  4 Units     mm^3
+# TableCol  5 ColHeader ThickAvg 
+# TableCol  5 FieldName Average Thickness
+# TableCol  5 Units     mm
+# TableCol  6 ColHeader ThickStd
+# TableCol  6 FieldName Thickness StdDev
+# TableCol  6 Units     mm 
+# TableCol  7 ColHeader MeanCurv
+# TableCol  7 FieldName Integrated Rectified Mean Curvature
+# TableCol  7 Units     mm^-1
+# TableCol  8 ColHeader GausCurv 
+# TableCol  8 FieldName Integrated Rectified Gaussian Curvature
+# TableCol  8 Units     mm^-2
+# TableCol  9 ColHeader  FoldInd
+# TableCol  9 FieldName  Folding Index 
+# TableCol  9 Units      unitless 
+# TableCol 10 ColHeader CurvInd
+# TableCol 10 FieldName Intrinsic Curvature Index
+# TableCol 10 Units     unitless
+# ColHeaders StructName NumVert SurfArea GrayVol ThickAvg ThickStd MeanCurv GausCurv FoldInd CurvInd
+BA1                                      1200    632   1802  2.172 0.535     0.134     0.061       24     3.4
+BA2                                      4430   2813   6625  2.200 0.530     0.121     0.039       52     7.8
+BA3a                                      895    614    864  1.929 0.441     0.160     0.066       14     2.3
+BA3b                                     2233   1378   2891  1.955 0.651     0.124     0.046       29     4.3
+BA4a                                     1661    841   2731  2.755 0.512     0.115     0.059       21     4.3
+BA4p                                     1283    837   1892  2.454 0.612     0.146     0.059       19     3.5
+BA6                                      9901   6226  18914  2.657 0.551     0.139     0.071      199    29.7
+BA44                                     2628   1760   4902  2.584 0.488     0.147     0.051       41     5.4
+BA45                                     2729   1896   4706  2.134 0.540     0.144     0.043       39     4.6
+V1                                       2605   1731   3252  1.825 0.547     0.157     0.067       51     7.4
+V2                                       8063   5147  12236  2.229 0.563     0.160     0.060      149    20.7
+MT                                       1258    804   2138  2.519 0.461     0.136     0.042       16     2.0
+perirhinal                                891    602   2260  2.820 0.769     0.116     0.042        8     1.4

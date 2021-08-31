@@ -1,0 +1,58 @@
+# Table of FreeSurfer cortical parcellation anatomical statistics 
+# 
+# generating_program mris_anatomical_stats
+# cvs_version $Id: mris_anatomical_stats.c,v 1.72 2011/03/02 00:04:26 nicks Exp $
+# mrisurf.c-cvs_version $Id: mrisurf.c,v 1.693.2.7 2013/05/12 22:28:01 nicks Exp $
+# sysname  Linux
+# machine  x86_64
+# 
+# anatomy_type surface
+# subjectname OAS30502_MR_d0395
+# hemi lh
+# AnnotationFile ./lh.BA.thresh.annot
+# Measure Cortex, NumVert, Number of Vertices, 133642, unitless
+# Measure Cortex, WhiteSurfArea, White Surface Total Area, 87705.8, mm^2
+# NTableCols 10
+# TableCol  1 ColHeader StructName
+# TableCol  1 FieldName Structure Name
+# TableCol  1 Units     NA
+# TableCol  2 ColHeader NumVert
+# TableCol  2 FieldName Number of Vertices
+# TableCol  2 Units     unitless
+# TableCol  3 ColHeader SurfArea
+# TableCol  3 FieldName Surface Area
+# TableCol  3 Units     mm^2
+# TableCol  4 ColHeader GrayVol
+# TableCol  4 FieldName Gray Matter Volume
+# TableCol  4 Units     mm^3
+# TableCol  5 ColHeader ThickAvg 
+# TableCol  5 FieldName Average Thickness
+# TableCol  5 Units     mm
+# TableCol  6 ColHeader ThickStd
+# TableCol  6 FieldName Thickness StdDev
+# TableCol  6 Units     mm 
+# TableCol  7 ColHeader MeanCurv
+# TableCol  7 FieldName Integrated Rectified Mean Curvature
+# TableCol  7 Units     mm^-1
+# TableCol  8 ColHeader GausCurv 
+# TableCol  8 FieldName Integrated Rectified Gaussian Curvature
+# TableCol  8 Units     mm^-2
+# TableCol  9 ColHeader  FoldInd
+# TableCol  9 FieldName  Folding Index 
+# TableCol  9 Units      unitless 
+# TableCol 10 ColHeader CurvInd
+# TableCol 10 FieldName Intrinsic Curvature Index
+# TableCol 10 Units     unitless
+# ColHeaders StructName NumVert SurfArea GrayVol ThickAvg ThickStd MeanCurv GausCurv FoldInd CurvInd
+BA1                                       874    405   1232  2.201 0.503     0.138     0.073       24     3.1
+BA2                                      1955   1207   2746  2.103 0.552     0.119     0.042       23     3.6
+BA3a                                      731    499    650  1.863 0.400     0.156     0.058        9     1.7
+BA3b                                     1387    882   1468  1.599 0.443     0.115     0.036       12     2.1
+BA4a                                     1670    861   2700  2.743 0.505     0.117     0.078       24     3.9
+BA4p                                     1014    690   1450  2.380 0.610     0.160     0.082       17     3.5
+BA6                                      5490   3316  10281  2.625 0.583     0.129     0.057       82    12.8
+BA44                                     1757   1181   3397  2.610 0.471     0.154     0.050       29     3.4
+BA45                                     1201    837   2320  2.195 0.538     0.157     0.048       21     2.3
+V1                                       2826   1858   3529  1.833 0.545     0.152     0.061       48     7.3
+V2                                       4054   2563   5968  2.161 0.556     0.166     0.070       91    12.5
+MT                                        321    212    460  2.362 0.316     0.124     0.033        3     0.4

@@ -179,6 +179,7 @@ def main():
   sourcedirList = sourcedirStr.split(',')
   for sourcedir in sourcedirList:
     print("Working on %s directory" % sourcedir)
+    patientCount  = 0
     for path, subdirs, files in os.walk(sourcedir):
       for name in files:
         forOas1Patient = False
@@ -248,12 +249,19 @@ def main():
                 pathlist = re.split('_', subjIdDirName)
                 subjId = pathlist[0]+'_'+pathlist[1]
 
-              # for path like ./OASIS_3/3NIFTI_FreeSurfer/sub-OAS31136_ses-d0156_T1w/stats/lh.aparc.stats
-              # its subjId is OAS31136_d156
               elif "OASIS_3" in path:
-                pathlist = re.split('-|_', subjIdDirName)
-                num = pathlist[3].lstrip('d').lstrip('0')
-                subjId = pathlist[1]+"_d"+num
+                if "sub-" in path and "ses-" in path:
+                  # for path like ./OASIS_3/3NIFTI_FreeSurfer/sub-OAS31136_ses-d0156_T1w/stats/lh.aparc.stats
+                  # its subjId is OAS31136_d156
+                  pathlist = re.split('-|_', subjIdDirName)
+                  num = pathlist[3].lstrip('d').lstrip('0')
+                  subjId = pathlist[1]+"_d"+num
+                elif "downloaded" in path and "_MR_" in path:
+                  # for path like ./OASIS_3/downloaded/OAS30502_MR_d0395/ASSESSORS/OAS30502_Freesurfer53_d0395/out/DATA/OAS30502_MR_d0395/stats/
+                  # its subjId is OAS30502_d395
+                  pathlist = re.split('-|_', subjIdDirName)
+                  num = pathlist[2].lstrip('d').lstrip('0')
+                  subjId = pathlist[0]+"_d"+num
 
               elif '-' in path or '_' in path: # for that rest path, it is formated either like subjid-xxx-yyy or subjid_xxx_yyy
                 # this should cover BCH case, in which dirname like 4634156-MPRAGE_rMPRAGE, where 4634156 is id
@@ -276,10 +284,14 @@ def main():
               print("cannot find subject ID index for subjId: %s" % subjId)
               continue  
 
+            patientCount += 1
             print("subjIdIndex: %d" % subjIdIndex)
             print("patientInfo: ")
             print(patientInfo)
             print("")
+
+    print("For %s directory, %d patients info found" % (sourcedir, patientCount))
+    print("--------------------------------\n")
 
           # statsDict = proc_stats_file(path, name)
           # print("statsDict:")
