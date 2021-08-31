@@ -177,6 +177,7 @@ def main():
 
   sourcedirStr = args.sourcedir.replace(" ", "") # remove all blank characters
   sourcedirList = sourcedirStr.split(',')
+  totalPatientCount = 0
   for sourcedir in sourcedirList:
     print("Working on %s directory" % sourcedir)
     patientCount  = 0
@@ -231,11 +232,16 @@ def main():
               # its subjId is 4488696
               elif "beijingEn" in path:
                 subjId = subjIdDirName.replace("BJ","").replace("_MPRAGE","")
+                print("Debin !!!! subjId %s" % subjId)
 
               # for path like ./DLBS/3NIFTI_FreeSurfer/0028638-session_1-anat/stats/rh.w-g.pct.stats
               # its subjId is 28638
+              elif  "DLBS" in path:
+                subjId = subjIdDirName.split('-')[0].lstrip('0')
+
               # for path like ./Huaxi/download/0028316/stats/lh.aparc.stats
               # its subjId is 28316
+              elif 'Huaxi/download' in path:
                 subjId = subjIdDirName.split('-')[0].lstrip('0')
 
               # for path like ./MGH/3NIFTI_FreeSurfer/HIE_122-VISIT_01-SAGMPRAGE_P2_1MM/stats/rh.aparc.stats
@@ -291,7 +297,10 @@ def main():
             print("")
 
     print("For %s directory, %d patients info found" % (sourcedir, patientCount))
+    totalPatientCount += patientCount
     print("--------------------------------\n")
+
+  print("Total patient count %d\n" % totalPatientCount)
 
           # statsDict = proc_stats_file(path, name)
           # print("statsDict:")
