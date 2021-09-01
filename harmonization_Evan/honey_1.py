@@ -149,12 +149,6 @@ def main():
   # firstFileStructNames = []
   firstFileSurfaceAreas = []
   # finalMegeredDataDic = {}
-  genFilePrefix = ''
-
-  if args.filename == 'lh.aparc.stats':
-    genFilePrefix = 'lh_';
-  elif args.filename == 'rh.aparc.stats':
-    genFilePrefix = 'rh_';
 
   datasetHeadline, subjectIdlist, datasetlist = proc_dataset_file(args.dataset)
   print("datasetHeadline: ")

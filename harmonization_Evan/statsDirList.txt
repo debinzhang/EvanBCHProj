@@ -16,13 +16,3 @@
 "./StatsData/ABIDE_I, ./StatsData/BGSP, ./StatsData/DLBS, ./StatsData/HCPdevelopment, ./StatsData/IXI_600, ./StatsData/MGH, ./StatsData/NIH_PD, ./StatsData/beijingEn, ./StatsData/BCH, ./StatsData/Huaxi, ./StatsData/OASIS_3"
 
 "/neuro/labs/grantlab/research/MRI_Predict_Age/ABIDE_I, /neuro/labs/grantlab/research/MRI_Predict_Age/BGSP, /neuro/labs/grantlab/research/MRI_Predict_Age/DLBS, /neuro/labs/grantlab/research/MRI_Predict_Age/HCPdevelopment, /neuro/labs/grantlab/research/MRI_Predict_Age/IXI_600, /neuro/labs/grantlab/research/MRI_Predict_Age/MGH, /neuro/labs/grantlab/research/MRI_Predict_Age/NIH_PD, /neuro/labs/grantlab/research/MRI_Predict_Age/beijingEn, /neuro/labs/grantlab/research/MRI_Predict_Age/BCH, /neuro/labs/grantlab/research/MRI_Predict_Age/Huaxi, /neuro/labs/grantlab/research/MRI_Predict_Age/OASIS_3"
-
-
-tats file: /neuro/labs/grantlab/research/MRI_Predict_Age/OASIS_3/downloaded/OAS30791_MR_d1422/ASSESSORS/OAS30791_Freesurfer50_d1422/out/DATA/OAS30791_MR_d1422/stats/lh.aparc.stats
-Got subjId OAS30791_d1422 from stats file path: OAS30791_MR_d1422
-cannot find subject ID index for subjId: OAS30791_d1422
-stats file: /neuro/labs/grantlab/research/MRI_Predict_Age/OASIS_3/downloaded/OAS31021_MR_d1318/ASSESSORS/OAS31021_Freesurfer53_d1318/out/DATA/OAS31021_MR_d1318/stats/lh.aparc.stats
-Got subjId OAS31021_d1318 from stats file path: OAS31021_MR_d1318
-subjIdIndex: 28571
-patientInfo:
-['OASIS_3', 'OAS31021_d1318', '65', 'M', 'SiemensBiograph_mMR', '3T']
