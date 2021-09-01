@@ -123,7 +123,7 @@ def getOas1AgeGender(path):
 
 
 def main():
-  parser = argparse.ArgumentParser(description='Example cmd:  python3 ./honey_real_1.py -s . -f lh.aparc.stats -d ./dataset')
+  parser = argparse.ArgumentParser(description='Example cmd:  python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset -o lh_combined_stats.csv')
   parser.add_argument('-s', '--sourcedir', default='.', help='directory that contains *.stats file')
   parser.add_argument('-f', '--filename', default='lh.aparc.stats', help='stats file name')
   parser.add_argument('-d', '--dataset', default='./Dataset.csv', help='dataset file path and name')

@@ -91,3 +91,47 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
 	The following is the command to run the script:
 	
 			python3 Evan_Harmonization_1.py -s GausCurve
+			
+ 4. harmonization_Evan
+ 
+ 		This is a newly added directory. The purpose for the scripts in this directory is to handle the whole process from stats collection to generating harmonization data. There are two scripts under harmonization_Evan directory:
+ 	
+ 		a. honey_1.py
+ 		
+ 			This script combines the information from Dataset.csv file and *.stats file, and saves the data in a single combined .csv file. The script works in the following steps:
+				1. Search all the directories from sourceDir list that users input from commandline for the stats file that users specified from cmdline, such as lh.aparc.stats
+				2. Once such directory is found, get the patient's subjectId from the directory path
+				3. Use the patient's subjectId as a key to search the dataset.csv file; If an entry is found get the patient's ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength" info from the dataset.csv
+				4. From the patient's stats file (found at step 1), get the surfaceArea list, such as bankssts and caudalanteriorcingulate, and structName list, such as NumVert and SurfArea, and their corresponding data (it is a two dimention array)
+				5. Combined patient's dataset data from step 3 and stats data from step, output into the fianl combined csv file in the final csv file, the first row looks like:
+				"Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"
+				and the rest of rows are corresponding data. Each row is for a patient
+ 			
+ 		The following is the command to run the script:
+ 		
+ 				python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset -o lh_combined_stats.csv
+ 				
+ 		Note: -s specifies the directory list that may contain the stats files. Currently the following directories contain real data:
+ 		
+			"/neuro/labs/grantlab/research/MRI_Predict_Age/ABIDE_I, /neuro/labs/grantlab/research/MRI_Predict_Age/BGSP, /neuro/labs/grantlab/research/MRI_Predict_Age/DLBS, /neuro/labs/grantlab/research/MRI_Predict_Age/HCPdevelopment, /neuro/labs/grantlab/research/MRI_Predict_Age/IXI_600, /neuro/labs/grantlab/research/MRI_Predict_Age/MGH, /neuro/labs/grantlab/research/MRI_Predict_Age/NIH_PD, /neuro/labs/grantlab/research/MRI_Predict_Age/beijingEn, /neuro/labs/grantlab/research/MRI_Predict_Age/BCH, /neuro/labs/grantlab/research/MRI_Predict_Age/Huaxi, /neuro/labs/grantlab/research/MRI_Predict_Age/OASIS_3"
+ 	
+ 		
+ 		b.  harmonDataBuilder_1.py
+ 		
+ 		This script generates three types of files: gen_structname.csv, PostHarmon_structname.csv such as gen_Vermis.csv and PostHarmon_Vermis.csv, and combined PostHarmon_all.csv. 
+ 		
+ 		The script takes the lh_combined_stats.csv, which is built by the ./honey_1.py script in the last step, as input file; each row in the file is for a patient.
+
+		The generated gen_structname.csv file, such as gen_Vermis.csv, contains two duplicate rows, with the 2nd row slightly modified (added 0.01 to the last column). Each column is a for a patient.
+
+		The 2nd generated file, PostHarmon_Vermis.csv, contains the following columns:
+		"#,Age,Vermis,Dataset" and 6048 subsequent rows, with one row for a patient. The first column "#" is a sequence number starting from 1. 
+
+		The 3rd generated file, PostHarmon_all.csv, combines all the PostHarmon_xxx.csv into a
+		single file. That makes uploading to R Studio easier.
+
+		This script can also plot harmonization pictures. Used command line option "-p " to specify how many pictures you want to paint. The default number is one.
+		
+		 The following is the command to run the script:
+		 
+			python ./harmonDataBuilder_1.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv	
