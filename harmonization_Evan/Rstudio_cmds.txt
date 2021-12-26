@@ -1,0 +1,23 @@
+Goto: https://www.rstudio.com/products/cloud/
+
+login with email address: evanzhang48@gmail.com, then choose "OuYangBCHProject" project.
+
+
+> library(tidymv)
+> Load your .csv file. Note: the loaded file are saved in Cload>project directory, which is considered the root dir.
+  Users may created subdir under it. In that case, when read in csv, you need to sepecify the full path, like
+  PostHarmon_all<-read.csv("my_dir/lh_PostHarmon_all.csv")
+> PostHarmon_all<-read.csv("lh_PostHarmon_all.csv")
+> geom_point()
+> View(PostHarmon_all)
+
+
+
+> PostHarmon_all<-read.csv("lh_PostHarmon_all.csv")
+> View(PostHarmon_all)
+> ggplot(PostHarmon_all, aes(x=Age, y=bankssts.NumVert, color=Dataset))+geom_point()+geom_smooth(colour="black")+labs(y="bankssts.NumVert", title="PostHarmon - bankssts.NumVert")
+
+y variable is changable.
+
+title changable.
+
