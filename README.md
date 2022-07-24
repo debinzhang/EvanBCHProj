@@ -100,18 +100,19 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
   
   **a. honey_1.py**
     
-  This script combines the information from Dataset.csv file and *.stats file, and saves the data in a single combined .csv file. The script works in the following steps:
+  This script combines the information from Dataset.csv file and *.stats files, and saves the data in a single combined .csv file. The script works in the following steps:
+  
       1. Search all the directories from sourceDir list that users input from commandline for the stats file that users specified from cmdline, such as lh.aparc.stats
-      2. Once such directory is found, get the patient's subjectId from the directory path
+      2. Once such a directory is found, get the patient's subjectId from the directory path
       3. Use the patient's subjectId as a key to search the dataset.csv file; If an entry is found get the patient's ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength" info from the dataset.csv
-      4. From the patient's stats file (found at step 1), get the surfaceArea list, such as bankssts and caudalanteriorcingulate, and structName list, such as NumVert and SurfArea, and their corresponding data (it is a two dimention array)
-      5. Combined patient's dataset data from step 3 and stats data from step, output into the final combined csv file in the final csv file, the first row looks like:
-        "Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"
-        and the rest of rows are corresponding data. Each row is for a patient.
+      4. From the patient's stats file (found in step 1), get the surfaceArea list, such as bankssts and caudalanteriorcingulate, and structName list, such as NumVert and SurfArea, and their corresponding data (it is a two dimensional array)
+      5. Combined patient's dataset data from step 3 and stats data from step4, output into the final combined csv file in the final csv file, the first row looks like:
+`        "Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"`
+        and the rest of the rows are corresponding data. Each row is for a patient.
       
   The following is the command to run the script:
     
-    python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset.csv -o lh_combined_stats.csv
+		`    python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset.csv -o lh_combined_stats.csv`
         
     Note: -s specifies the directory list that may contain the stats files. Currently, the following directories contain real data:
     
