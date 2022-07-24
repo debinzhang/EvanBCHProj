@@ -114,7 +114,7 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
       
   The following is the command to run the script:
     
-	***`		python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset.csv -o lh_combined_stats.csv`***
+***`		python ./honey_1.py -s . -f lh.aparc.stats -d ./dataset.csv -o lh_combined_stats.csv`***
         
    Note: -s specifies the directory list that may contain the stats files. Currently, the following directories contain real data:
     
