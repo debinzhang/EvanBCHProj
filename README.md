@@ -107,7 +107,8 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
       3. Use the patient's subjectId as a key to search the dataset.csv file; If an entry is found get the patient's ["Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength" info from the dataset.csv
       4. From the patient's stats file (found in step 1), get the surfaceArea list, such as bankssts and caudalanteriorcingulate, and structName list, such as NumVert and SurfArea, and their corresponding data (it is a two dimensional array)
       5. Combined patient's dataset data from step 3 and stats data from step4, output into the final combined csv file in the final csv file, the first row looks like:
-`        "Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"`
+``        "Dataset", "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts.NumVert", bankssts.SurfArea", ... "insula.NumVert", "insula.SurfArea"``
+
         and the rest of the rows are corresponding data. Each row is for a patient.
       
   The following is the command to run the script:
