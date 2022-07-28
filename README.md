@@ -145,3 +145,62 @@ This script can also plot harmonization pictures. Used command line option "-p "
 The following is the command to run the script:
      
   python ./harmonDataBuilder_1.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv 
+  
+ 5. harmonization_Evan_w_vol
+
+ The scripts:
+	
+	1. harmonDataBuilder_1_vol.py
+	2. harmonDataBuilder_1_vol_no_empty_vol.py
+	3. remove_empty_volume_patients.py
+	4.	harmonDataBuilder_1_vol_no_empty_vol_w_age.py
+	
+ is similar to harmonization_Evan/harmonDataBuilder_1.py with the following differences:
+ 	1. harmonDataBuilder_1_vol.py adds volume as one of the harmonization covars, like:
+` 		    covars = {
+ 		    	'batch':scannerList0,
+              'gender':genderList0,
+              'volume':volumeList0
+           }`
+      To run the script:
+        `python ./harmonDataBuilder_1_vol.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv`
+        
+ 	2. harmonDataBuilder_1_vol_no_empty_vol.py
+
+ 	The combined_stats.csv may contain patients that have empty "volume". This script eliminates/ignores those patients whose records have empty volume.
+ 	
+ 	To run the script:
+ 		`python ./harmonDataBuilder_1_vol_no_empty_vol.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv`
+ 	
+ 	3. remove_empty_volume_patients.py
+ 
+ 	This simple utility script simply removes all the records that have empty volumes. To run the script:
+ 	
+ `	python ./remove_empty_volume_patients.py -s . -f source_combined_stats.csv -o combined_stats_w_empty_vol_removed.csv`
+ 	
+ 	4. harmonDataBuilder_1_vol_no_empty_vol_w_age.py
+ 	Similar to harmonDataBuilder_1.py, but adds both "volume" and "age" as harmonization covars, like:
+ 	
+` 	    covars = {'batch':scannerList0,
+              'gender':genderList0,
+              'volume':volumeList0,
+              'age':ageList0}`
+ 
+ 6. fillOasisVolumeData
+ 	
+ 	Evan's combined_stats.csv, which is obtains by running the honey_2.py script against BCH database, contains records with empty volumes. Somehow, Melissa's file (either PreHarmonization_w_dataset.csv or ../melissa_PreHarmonization_super_dataset.xlsx) has all patients' volume data. This script is to extract the volume info from Melissa file and fill them into Evan's combined_stats.csv.
+ 	
+ 	Note: so far all the records with missing volume come from Oasis.
+ 	
+ 	To run the script:
+ 	`python ./fillOasisVolume.py -s ./source.csv -i lh_combined_stats_07242022_1123pm.csv -o lh_combined_stats_07242022_1123pm_w_volume_filled.csv `
+ 	
+ 	Here the ./source.csv is a manually generated file from PreHarmonization_w_dataset.csv. The source.csv file only has 'Dataset', 'Path', 'Volume', and 'Sex' columns. The PreHarmonization_w_dataset.csv is manually generated from the original melissa_PreHarmonization_super_dataset.xlsx. PreHarmonization_w_dataset.csv adds 'Dataset' column. The the Dataset information comes from "path".
+ 	
+ 	The script links the records in Melissa's and Evan's files with subject Id (like "OAS30080_d1318"). In Melissa's file the subject id stays in the "Path".
+ 	
+ 	
+ 	
+ 	
+ 	
+ 7. To_be_added
