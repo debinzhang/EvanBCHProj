@@ -94,7 +94,7 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
   
       python3 Evan_Harmonization_1.py -s GausCurve
       
-## ** 4. harmonization_Evan**
+## **4. harmonization_Evan**
  
   This is a newly added directory. The purpose for the scripts in this directory is to handle the whole process from stats collection to generating harmonization data. There are two scripts under harmonization_Evan directory:
   
