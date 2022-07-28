@@ -159,11 +159,11 @@ The following is the command to run the script:
  	1. harmonDataBuilder_1_vol.py adds volume as one of the harmonization covars, like:
  	
  ```
- 		    covars = {
- 		    	'batch':scannerList0,
-              'gender':genderList0,
-              'volume':volumeList0
-           }
+      covars = {
+                'batch':scannerList0,
+                'gender':genderList0,
+                'volume':volumeList0
+               }
  ```
     
       To run the script:
@@ -192,10 +192,13 @@ The following is the command to run the script:
  	4. harmonDataBuilder_1_vol_no_empty_vol_w_age.py
  	Similar to harmonDataBuilder_1.py, but adds both "volume" and "age" as harmonization covars, like:
  	
-``` 	    covars = {'batch':scannerList0,
+``` 	   
+   covars = {
+              'batch':scannerList0,
               'gender':genderList0,
               'volume':volumeList0,
-              'age':ageList0}
+              'age':ageList0
+            }
 ```
  
  6. fillOasisVolumeData
