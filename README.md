@@ -174,6 +174,7 @@ The following is the command to run the script:
  	The combined_stats.csv may contain patients that have empty "volume". This script eliminates/ignores those patients whose records have empty volume.
  	
  	To run the script:
+ 	
  	```
  		python ./harmonDataBuilder_1_vol_no_empty_vol.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv
  	```
