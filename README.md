@@ -158,13 +158,14 @@ The following is the command to run the script:
  is similar to harmonization_Evan/harmonDataBuilder_1.py with the following differences:
  	1. harmonDataBuilder_1_vol.py adds volume as one of the harmonization covars, like:
  	
- 	```json
+ 	```
 ` 		    covars = {
  		    	'batch':scannerList0,
               'gender':genderList0,
               'volume':volumeList0
            }
     ```
+    
       To run the script:
     ```
         python ./harmonDataBuilder_1_vol.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv
