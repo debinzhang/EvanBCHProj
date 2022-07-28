@@ -4,7 +4,7 @@ This repo contains the scripts and data for Evan's Boston Child Hospital image p
 
 **There are three directories:**
 
-1. RealData
+## **1. RealData**
 
   The script, honey_real_1.py, searches all the stats files under the root_dir to generate  a list of csv files; one for a fieldname. The following is the command to run the script:
   
@@ -33,7 +33,7 @@ and each column is for a fieldname, such as "NumVert" or "SurfArea "
 
 This script generates multiple .csv files, one for each field, such as "NumVert.csv" and "SurfArea.csv". Each row of the generated file maps to a user info field or a surfaceArea, such as "subjectId", "Age", "Sex", "Scanner type", "Magnetic field of strength", "bankssts", "caudalanteriorcingulate". Each column is for a patient.
   
-2. harmonization
+## **2. harmonization**
 
   This script generates two types of files: gen_structname.csv and PostHarmon_structname.csv
 such as gen_Vermis.csv and PostHarmon_Vermis.csv
@@ -70,7 +70,7 @@ So it needs to be run after running combatTest_5.py script, which generates gen_
 
     python ./postharmon_gen.py -s . -f Harmonization_meta_data.csv -n ICV 
 
-3. melissaVersion
+## **3. melissaVersion**
 
   This script takes a single fieldname_Input.csv file, such as GausCurve_Input.csv, 
 to generate gen_fieldname_Input.csv, such as gen_GausCurve_Input.csv
@@ -94,7 +94,7 @@ Evan_Scanner.txt, Evan_Gender.txt, Evan_Vendor.txt, Evan_Age.txt
   
       python3 Evan_Harmonization_1.py -s GausCurve
       
- 4. harmonization_Evan
+## ** 4. harmonization_Evan**
  
   This is a newly added directory. The purpose for the scripts in this directory is to handle the whole process from stats collection to generating harmonization data. There are two scripts under harmonization_Evan directory:
   
@@ -146,7 +146,7 @@ The following is the command to run the script:
      
   python ./harmonDataBuilder_1.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv 
   
- 5. harmonization_Evan_w_vol
+##  5. **harmonization_Evan_w_vol**
 
  The scripts:
 	
@@ -156,6 +156,7 @@ The following is the command to run the script:
 	4.	harmonDataBuilder_1_vol_no_empty_vol_w_age.py
 	
  is similar to harmonization_Evan/harmonDataBuilder_1.py with the following differences:
+ 
  	1. harmonDataBuilder_1_vol.py adds volume as one of the harmonization covars, like:
  	
  ```
