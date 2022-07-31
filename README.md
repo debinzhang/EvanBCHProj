@@ -153,7 +153,7 @@ The following is the command to run the script:
 	1. harmonDataBuilder_1_vol.py
 	2. harmonDataBuilder_1_vol_no_empty_vol.py
 	3. remove_empty_volume_patients.py
-	4.	harmonDataBuilder_1_vol_no_empty_vol_w_age.py
+	4. harmonDataBuilder_1_vol_no_empty_vol_w_age.py
 	
  is similar to harmonization_Evan/harmonDataBuilder_1.py with the following differences:
  
@@ -202,7 +202,7 @@ The following is the command to run the script:
             }
 ```
  
- 6. fillOasisVolumeData
+##  6. fillOasisVolumeData
  	
  	Evan's combined_stats.csv, which is obtains by running the honey_2.py script against BCH database, contains records with empty volumes. Somehow, Melissa's file (either PreHarmonization_w_dataset.csv or ../melissa_PreHarmonization_super_dataset.xlsx) has all patients' volume data. This script is to extract the volume info from Melissa file and fill them into Evan's combined_stats.csv.
  	
@@ -220,6 +220,37 @@ The following is the command to run the script:
  	
  	
  	
- 	
- 	
- 7. To_be_added
+##  7.  melissa_sort_table
+
+The sort_tab.py script in this directory is to help Melissa to categorize data in different percentiles. To run the script:
+```
+  python ./sort_tab.py -s raw_age_vol_tab.csv -o sorted_tab.csv
+```
+
+Here ***raw_age_vol_tab.csv*** is the source or input file with the format of:
+
+```
+	Age.     ICV
+	0.2.     562359.842
+	1.5.     450071.9752
+	15.2	  442452.0063
+	45.7	  358915.9132
+```
+The records in the input file should be sorted by age. 
+
+The ***sorted_tab.csv*** is the output file. It is in the following format:
+
+```
+Age Range	 Min	10th	25th	Median	75th	90th	Max	 index Range
+0 - 1.0	239568.1457	429238.9165	527864.5379	726215.6716	930796.5247	1025190.324	1220940.394	2 - 297
+1 - 2.0	774731.4129	978889.2322	1046017.467	1116781.007	1210622.024	1297307.438	1565623.14	298 - 457
+2 - 3.0	803650.1416	1098890.361	1193454.476	1269898.471	1362983.02	1449870.586	1686498.146	458 - 568
+3 - 4.0	979832.7671	1140286.063	1214074.488	1266524.998	1361491.426	1459722.896	1585390.506	569 - 644
+4 - 5.0	1103219.378	1214119.828	1287692.12	1372762.211	1457288.977	1537138.62	1814202.587	645 - 725
+5 - 6.0	1131721.771	1233725.088	1266698.611	1419578.28	1538091.105	1634914.973	1716631.654	726 - 781
+
+```
+
+
+ 
+ 8. To_be_added
