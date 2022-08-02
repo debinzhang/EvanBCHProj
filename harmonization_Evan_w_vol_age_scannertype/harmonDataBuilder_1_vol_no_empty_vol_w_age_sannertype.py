@@ -38,9 +38,20 @@ from scipy.optimize import curve_fit
 # This script can also plot harmonization pictures. Used command line option "-p "
 # to specify how many pictures you want to paint. The default number is one.
 
+def getScannerNum(scannerTypeStr):
+  if scannerTypeStr == "Siemens":
+    return 1
+  elif scannerTypeStr == "Philips":
+    return 2
+  elif scannerTypeStr == "GE":
+    return 3
+  elif scannerTypeStr == "Unknown":
+    return 4
+  else:
+    print("Unknow scanner type: %s" % scannerTypeStr)
+    return 5
 
-
-def extractDataSet(path, filename):
+def extractDataSet(path, filename, scantypenum):
   genderList_ = []
   # this list is actually for "Magnetic field of strength"
   scannerList_ = []
@@ -58,10 +69,6 @@ def extractDataSet(path, filename):
     lines = f.readlines()
     headline_ = re.sub('[^\u0000-\u007f]', '',  lines[0]).split(',')
     headline_[-1] = headline_[-1].strip()
-
-    print("headline_:")
-    print(headline_)
-    print("------------")
 
     for headItem in headline_:
       extractedDataDir_[headItem] = []
@@ -115,14 +122,22 @@ def extractDataSet(path, filename):
     # generate scanner type list:
     for i in range(len(extractedDataDir_['Scanner type'])):
       if extractedDataDir_['Scanner type'][i] == "":
-        scannerTypeList_ = "Unknown"
-      else:
+        if scantypenum:
+          scannerTypeList_.append(getScannerNum("Unknown"))
+        else:
+          scannerTypeList_.append("Unknown")
         # treat all Siemens scanner types, such as "SiemensBiograph_mMR" and 
         # "SiemensTrioTim" the same
-        if "Siemens" in extractedDataDir_['Scanner type'][i]:
-          scannerTypeList_.append("Siemens")
-        else:
-          scannerTypeList_.append(extractedDataDir_['Scanner type'][i])
+      elif "Siemens" in extractedDataDir_['Scanner type'][i]:
+          if scantypenum:
+            scannerTypeList_.append(getScannerNum("Siemens"))
+          else:
+            scannerTypeList_.append("Siemens")
+      else:
+          if scantypenum:
+            scannerTypeList_.append(getScannerNum(extractedDataDir_['Scanner type'][i]))
+          else:
+            scannerTypeList_.append(extractedDataDir_['Scanner type'][i])
 
   return vol_skip_count, scannerTypeList_, ageList_, genderList_, scannerList_, volumeList_, headline_, extractedDataDir_
 
@@ -132,10 +147,13 @@ def main():
   parser.add_argument('-f', '--filename', default='combined_stats.csv', help='Harmonization meta data file')
   parser.add_argument('-p', '--plotnum', type=int, default=1, help='how many harmonizied pictures to plot')
   parser.add_argument('-o', '--output', default='PostHarmon_all.csv', help='final single output file')
+  parser.add_argument('-i', '--scantypenum', action='store_true', help='treat scanner_type as interger, like Siemens=1, Philips=2, etc.')
+  parser.add_argument('-n', '--no-scantypenum', dest='scantypenum', action='store_false', help='treat scanner_type as number, like Siemens=1, Philips=2, etc.')
+  parser.set_defaults(scantypenum=True)
   args = parser.parse_args()
 
   vol_skip_count, scannerTypeList0, ageList0, genderList0, scannerList0, volumeList0, headline, extractedDataDir = \
-    extractDataSet(args.sourcedir, args.filename)
+    extractDataSet(args.sourcedir, args.filename, args.scantypenum)
 
   if vol_skip_count > 0:
     print("%d patients are skipped due to missing volume info" % vol_skip_count)
@@ -191,9 +209,6 @@ def main():
               'age':ageList0,
               'scannertype':scannerTypeList0}
 
-    print("scannerList_ len: %d... gen len:%d... volume len:%d ... age len:%d... scannertype len:%d" % \
-      (len(scannerList0), len(genderList0), len(volumeList0), len(ageList0), len(scannerTypeList0)))
-
     covars = pd.DataFrame(covars)
 
     # To specify names of the variables that are categorical:
@@ -213,6 +228,9 @@ def main():
           categorical_cols=categorical_cols)["data"]
 
       postHarmonCombinedData[colname] = data_combat[0]
+
+      print("scannerList_ len: %d... gen len:%d... volume len:%d ... age len:%d... scannertype len:%d" % \
+        (len(scannerList0), len(genderList0), len(volumeList0), len(ageList0), len(scannerTypeList0)))
 
       postHarmonFilename = "./PostHarmon_" + colname + ".csv"
 
