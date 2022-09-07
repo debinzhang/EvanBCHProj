@@ -6,7 +6,7 @@ new Password: Grape114#@!ej
 Then approve by two factor login via Evan's phone
 
 2. ssh -X -Y ch226110@e2.tch.harvard.edu 
-   Password: Grape114#@!ej
+   Password: Grape114#@!ejej
 
 3. source ~/.bashrc2
 
