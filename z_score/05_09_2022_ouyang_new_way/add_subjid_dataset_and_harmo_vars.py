@@ -122,7 +122,7 @@ def main():
   args = parser.parse_args()
 
   # Note: the datasetFile or source_data_w_subjId.csv file is a copy of harmonization_Evan_w_vol_age_scannertype/output_w_subjId.csv. This file was obtained from 
-  # PreHarmonization_w_dataset.csv.bak with subjectId added, and the PThe PreHarmonization_w_dataset.csv was originally manually generated from the 
+  # PreHarmonization_w_dataset.csv.bak with subjectId added, and the PreHarmonization_w_dataset.csv was originally manually generated from the 
   # melissa_PreHarmonization_super_dataset.xlsx.
 
   # read in datasetFile/source_data_w_subjId.csv, from which we will get harmonization vars, like sex, age, scanner_type, etc...
