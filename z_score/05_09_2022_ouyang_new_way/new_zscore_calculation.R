@@ -9,7 +9,7 @@ setwd("/Users/dzhang/Gits/EvanBCHProj/z_score/05_09_2022_ouyang_new_way")
 
 #real_data <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_02_2022_w_dataset.csv", stringsAsFactors = TRUE)
 preharmo_data <- read.csv("preHarmo.csv", stringsAsFactors = TRUE)
-postharmo_data <- read.csv("PostHarmon_all_w_thick.csv", stringsAsFactors = TRUE)
+postharmo_data <- read.csv("PostHarmon_all_test.csv", stringsAsFactors = TRUE)
 
 adjustByMeanData <- function(data, feature) {
   data1 <-data[data$rh_MeanThickness_thickness != 0, ]
@@ -83,7 +83,6 @@ zscore_plot(postharmo_data, rh_isthmuscingulate_thickness)
 zscore_plot(preharmo_data, rh_lateraloccipital_thickness)
 zscore_plot(postharmo_data, rh_lateraloccipital_thickness)
 
-
 zscore_plot(preharmo_data, rh_lateralorbitofrontal_thickness)
 zscore_plot(postharmo_data, rh_lateralorbitofrontal_thickness)
 
@@ -92,7 +91,6 @@ zscore_plot(postharmo_data, rh_lingual_thickness)
 
 zscore_plot(preharmo_data, rh_medialorbitofrontal_thickness)
 zscore_plot(postharmo_data, rh_medialorbitofrontal_thickness)
-
 
 zscore_plot(preharmo_data, rh_middletemporal_thickness)
 zscore_plot(postharmo_data, rh_middletemporal_thickness)

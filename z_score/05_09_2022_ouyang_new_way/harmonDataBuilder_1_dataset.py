@@ -41,6 +41,7 @@ from scipy.optimize import curve_fit
 def extractDataSet(path, filename):
   genderList_ = []
   scannerList_ = []
+  datasetList_ = []
   headline_ = []
   extractedDataDir_ = {}
 
@@ -80,7 +81,30 @@ def extractDataSet(path, filename):
       else:
         scannerList_.append(3)
 
-    return genderList_, scannerList_, headline_, extractedDataDir_
+    # generate dataset list:
+    for i in range(len(extractedDataDir_['Dataset'])):
+      if extractedDataDir_['Dataset'][i] == "ABIDE_I":
+        datasetList_.append(1)
+      elif extractedDataDir_['Dataset'][i] == "BCH":
+        datasetList_.append(2)
+      elif extractedDataDir_['Dataset'][i] == "beijingEn":
+        datasetList_.append(3)
+      elif extractedDataDir_['Dataset'][i] == "BGSP":
+        datasetList_.append(4)
+      elif extractedDataDir_['Dataset'][i] == "DLBS":
+        datasetList_.append(5)
+      elif extractedDataDir_['Dataset'][i] == "IXI_600":
+        datasetList_.append(6)
+      elif extractedDataDir_['Dataset'][i] == "MGH":
+        datasetList_.append(7)
+      elif extractedDataDir_['Dataset'][i] == "NIH_PD":
+        datasetList_.append(8)
+      elif extractedDataDir_['Dataset'][i] == "OASIS_3":
+        datasetList_.append(9)
+      else:
+        print("Unknow dataset: %s" % extractedDataDir_['Dataset'][i])
+
+    return genderList_, scannerList_, datasetList_, headline_, extractedDataDir_
 
 def main():
   parser = argparse.ArgumentParser(description='Example cmd:  python ./harmonDataBuilder_1.py -s . -f combined_stats.csv -p 1 -o PostHarmon_all.csv')
@@ -90,7 +114,7 @@ def main():
   parser.add_argument('-o', '--output', default='PostHarmon_all.csv', help='final single output file')
   args = parser.parse_args()
 
-  genderList0, scannerList0, headline, extractedDataDir = \
+  genderList0, scannerList0, datasetList0, headline, extractedDataDir = \
     extractDataSet(args.sourcedir, args.filename)
 
   for i in range(len(headline)):
@@ -136,12 +160,13 @@ def main():
     # data = np.genfromtxt('./gen_ICV.csv', delimiter=",",skip_header = 0)
 
     covars = {'batch':scannerList0,
-              'gender':genderList0}
+              'gender':genderList0,
+              'dataset':datasetList0}
 
     covars = pd.DataFrame(covars)  
 
     # To specify names of the variables that are categorical:
-    categorical_cols = ['gender']
+    categorical_cols = ['gender', 'dataset']
 
     # To specify the name of the variable that encodes for the scanner/batch covariate:
     batch_col = 'batch'
@@ -151,7 +176,8 @@ def main():
       data_combat = neuroCombat(dat=data,
           covars=covars,
           batch_col=batch_col,
-          categorical_cols=categorical_cols)["data"]
+          categorical_cols=categorical_cols,
+          mean_only=True)["data"]
 
       postHarmonCombinedData[colname] = data_combat[0]
 
