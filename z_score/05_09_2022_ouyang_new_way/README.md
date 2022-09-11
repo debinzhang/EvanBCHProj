@@ -30,10 +30,10 @@
 ### 2. Build harmonization data
 
 	Here we modified the harmonDataBuilder_1.py script from harmonization_Evan directory to generate post-harmonization data. We added dataset as part of neuroCombat co-vars, and we set "mean_only=True" while calling the neuroCombat function. The new script is called harmonDataBuilder_2.py. The following is an example of how to run the above commands (here we assume to original data is saved in ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv):	
-	`mkdir output_RH_thickness; 
+ 	 mkdir output_RH_thickness; 
 	 cd output_RH_thickness;
 	 python ../add_subjid_dataset_and_harmo_vars.py -s ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv -i ../source_data_w_subjId.csv -o ./preHarmo.csv
-	 python ../harmonDataBuilder_2.py -s . -f preHarmo.csv -p 1 -o PostHarmon_all.csv`
+	 python ../harmonDataBuilder_2.py -s . -f preHarmo.csv -p 1 -o PostHarmon_all.csv
 	 
 ### 3. Plot z_scroe with R Studio
     The commands to run R studio are saved in:
