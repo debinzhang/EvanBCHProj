@@ -4,14 +4,20 @@ import sys
 import argparse
 
 def getSubjIdDatasetFromPath(path):
+  unknownPath = False
+  failToParse = False
   subjIdFound = True
+
   if "ABIDE_I" in path:
     dataset = "ABIDE_I"
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/ABIDE_I/2NIFTI_SS_SEG_RAVENS/ABIDE50030/ABIDE50030_MPRAGE_ss.nii.gz"
     # paath = "/neuro/labs/grantlab/research/MRI_Predict_Age/ABIDE_I/3NIFTI_FreeSurfer/ABIDE50030_MPRAGE"
     result = re.search('(.*)3NIFTI_FreeSurfer/ABIDE([0-9]*)_(.*)', path)
-    # subjId = '50030'
-    subjId = result.group(2)
+    if result is not None:
+      # subjId = '50030'
+      subjId = result.group(2)
+    else:
+      failToParse = True
 
   elif "BCH" in path:
     dataset = "BCH"
@@ -21,8 +27,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/BCH/3NIFTI_FreeSurfer/4574338-MPRAGE_rMPRAGE"
     result = re.search('(.*)3NIFTI_FreeSurfer/([0-9]*)-(.*)', path)
-    # subjId = 4574338
-    subjId = result.group(2)
+    if result is not None:
+      # subjId = 4574338
+      subjId = result.group(2)
+    else:
+      failToParse = True
 
   elif "beijingEn" in path:
     dataset = "beijingEn"
@@ -32,8 +41,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/beijingEn/3NIFTI_FreeSurfer/BJ1060223_MPRAGE"
     result = re.search('(.*)/3NIFTI_FreeSurfer/BJ([0-9]*)_(.*)', path)
-    # subjId = '1060223'
-    subjId = result.group(2)
+    if result is not None:
+      # subjId = '1060223'
+      subjId = result.group(2)
+    else:
+      failToParse = True
 
   elif "BGSP" in path:
     dataset = "BGSP"
@@ -44,8 +56,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/BGSP/3NIFTI_FreeSurfer/Sub0001_Ses1_Scan_01_ANAT1"
     result = re.search('(.*)/Sub([0-9]*)_Ses1_Scan_(.*)', path)
-    # subjId = 'Sub0001_Ses1'
-    subjId = "Sub" + result.group(2) + "_Ses1"
+    if result is not None:
+      # subjId = 'Sub0001_Ses1'
+      subjId = "Sub" + result.group(2) + "_Ses1"
+    else:
+      failToParse = True
 
   elif "DLBS" in path:
     dataset = "DLBS"
@@ -56,8 +71,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/DLBS/3NIFTI_FreeSurfer/0028326-session_1-anat"
     result = re.search('(.*)/3NIFTI_FreeSurfer/(0*)([0-9]*)-(.*)', path)
-    # subjId = 28326
-    subjId = result.group(3)
+    if result is not None:
+      # subjId = 28326
+      subjId = result.group(3)
+    else:
+      failToParse = True
 
   elif "IXI_600" in path:
     dataset = "IXI_600"
@@ -68,8 +86,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/IXI_600/3NIFTI_FreeSurfer/IXI002-Guys-0828-T1"
     result = re.search('(.*)/3NIFTI_FreeSurfer/IXI([0-9]*)-(.*)', path)
-    # subjId = 'IXI002'
-    subjId = "IXI" + result.group(2)
+    if result is not None:
+      # subjId = 'IXI002'
+      subjId = "IXI" + result.group(2)
+    else:
+      failToParse = True
 
   elif "MGH" in path:
     dataset = "MGH"
@@ -80,8 +101,12 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/MGH/3NIFTI_FreeSurfer/HIE_012-VISIT_01-SAGMPRAGE_P2_1MM_PRE"
     result = re.search('(.*)/3NIFTI_FreeSurfer/HIE_([0-9]*)-(.*)', path)
-    # subjId = 'HIE_012'
-    subjId = "HIE_" + result.group(2)
+    if result is not None:
+      # subjId = 'HIE_012'
+      subjId = "HIE_" + result.group(2)
+    else:
+      failToParse = True
+
 
   elif "NIH_PD" in path:
     dataset = "NIH_PD"
@@ -92,8 +117,11 @@ def getSubjIdDatasetFromPath(path):
 
     # path = "/neuro/labs/grantlab/research/MRI_Predict_Age/NIH_PD/3NIFTI_FreeSurfer/deface_1002_v1_t1w"
     result = re.search('(.*)3NIFTI_FreeSurfer/deface_([0-9]*)_v([0-9]+)_(.*)', path)
-    # subjId = '1002_v1'
-    subjId = result.group(2) + "_v" + result.group(3)
+    if result is not None:
+      # subjId = '1002_v1'
+      subjId = result.group(2) + "_v" + result.group(3)
+    else:
+      failToParse = True
 
   elif "OASIS_3" in path:
     dataset = "OASIS_3"
@@ -104,13 +132,25 @@ def getSubjIdDatasetFromPath(path):
 
     # path= "/neuro/labs/grantlab/research/MRI_Predict_Age/OASIS_3/3NIFTI_FreeSurfer/sub-OAS30001_ses-d0129_run-01_T1w"
     result = re.search('(.*)3NIFTI_FreeSurfer/sub-OAS([0-9]+)_ses-d(0*)([0-9]+)_(.*)', path)
-    # subjId = 'OAS30066_d524'
-    subjId = "OAS" + result.group(2) + "_d" + result.group(4)
+    if result is not None:
+      # subjId = 'OAS30066_d524'
+      subjId = "OAS" + result.group(2) + "_d" + result.group(4)
+    else:
+      failToParse = True
 
   else:
+    unknownPath = True
     subjIdFound = False
-    print(" !!!!!!!! unrecognized path: " + path)
+    print(" !!!  path: %s with unknown subject ID" + path)
 
+  if failToParse:
+    subjIdFound = False
+    print("Failed to parse path: %s" % path)
+
+  if not subjIdFound:
+    dataset = "UK"
+    subjId = "NA"
+    
   return subjIdFound, dataset, subjId
 
 def main():
@@ -146,7 +186,10 @@ def main():
   headline_ = []
   extractedDataDict_ = {}
   match_count = 0
+  # miss_count is patient count for whom we cannot find match record in datasetFile
   miss_count = 0
+  # miss_subjId_count is the patient count for whom we cannot generate his/her subject ID
+  miss_subjId_count = 0
 
   with open(args.sourcefile, 'r') as srcf:
     lines = srcf.readlines()
@@ -170,6 +213,7 @@ def main():
       subjIdFound, dataset, subjId = getSubjIdDatasetFromPath(linelist[0])
       if not subjIdFound:
         print("Cannot find subjId for %s, ignore this patient!" % linelist[0])
+        miss_subjId_count += 1
         continue
 
       match_found = False
@@ -220,7 +264,8 @@ def main():
           outputLine.append(extractedDataDict_[headItem][i])
         preHarmof.write("%s\n" % ','.join(outputLine))
 
-    print("Matching records: %d... mismatch record:%s" % (match_count, miss_count))
+    print("Matching records: %d... mismatch record:%d... records that failed to build subjectId::%d" % \
+      (match_count, miss_count, miss_subjId_count))
 
 if __name__ == '__main__':
   main()

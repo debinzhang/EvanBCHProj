@@ -48,7 +48,7 @@ def extractDataSet(path, filename):
   with open(os.path.join(path, filename), 'r') as f:
     lines = f.readlines()
     headline_ = re.sub('[^\u0000-\u007f]', '',  lines[0]).split(',')
-    # headline_[-1] = headline_[-1].strip()
+    headline_[-1] = headline_[-1].strip()
 
     print("headline_:")
     print(headline_)
