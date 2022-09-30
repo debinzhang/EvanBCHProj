@@ -5,8 +5,8 @@ library(dplyr)
 
 setwd("/Users/dzhang/Gits/EvanBCHProj/z_score/05_09_2022_ouyang_new_way/09_26_zscore_boxplot")
 
-preharmo_data <- read.csv("preHarmo_LH_gauscurv.csv", stringsAsFactors = TRUE)
-postharmo_data <- read.csv("postHarmo_LH_gauscurv.csv", stringsAsFactors = TRUE)
+preharmo_data <- read.csv("preHarmo_LH_thickness.csv", stringsAsFactors = TRUE)
+postharmo_data <- read.csv("postHarmo_LH_thickness.csv", stringsAsFactors = TRUE)
 
 adjustByMeanData <- function(data, feature) {
   data1 <-data[data$eTIV != 0, ]
@@ -47,7 +47,32 @@ zscore_plot_grp_dataset <- function(data, feature, low=-3.0, high=3.0) {
 }
 
 
+zscore_plot_grp_dataset(preharmo_data, lh_bankssts_thickness)
+zscore_plot(postharmo_data, lh_bankssts_thickness)
+zscore_plot_grp_dataset(postharmo_data, lh_bankssts_thickness)
 
+zscore_plot_grp_dataset(preharmo_data, lh_cuneus_thickness)
+zscore_plot(postharmo_data, lh_cuneus_thickness)
+zscore_plot_grp_dataset(postharmo_data, lh_cuneus_thickness)
+
+zscore_plot_grp_dataset(preharmo_data, lh_inferiortemporal_thickness)
+zscore_plot(postharmo_data, lh_inferiortemporal_thickness)
+zscore_plot_grp_dataset(postharmo_data, lh_inferiortemporal_thickness)
+
+
+
+
+zscore_plot_grp_dataset(preharmo_data, lh_bankssts_curvind)
+zscore_plot(postharmo_data, lh_bankssts_curvind)
+zscore_plot_grp_dataset(postharmo_data, lh_bankssts_curvind)
+
+zscore_plot_grp_dataset(preharmo_data, lh_cuneus_curvind)
+zscore_plot(postharmo_data, lh_cuneus_curvind)
+zscore_plot_grp_dataset(postharmo_data, lh_cuneus_curvind)
+
+zscore_plot_grp_dataset(preharmo_data, lh_inferiortemporal_curvind)
+zscore_plot(postharmo_data, lh_inferiortemporal_curvind)
+zscore_plot_grp_dataset(postharmo_data, lh_inferiortemporal_curvind)
 
 
 
@@ -62,142 +87,5 @@ zscore_plot_grp_dataset(postharmo_data, lh_cuneus_gauscurv)
 zscore_plot_grp_dataset(preharmo_data, lh_inferiortemporal_gauscurv)
 zscore_plot(postharmo_data, lh_inferiortemporal_gauscurv)
 zscore_plot_grp_dataset(postharmo_data, lh_inferiortemporal_gauscurv)
-
-
-
-
-
-
-
-
-zscore_plot(preharmo_data, rh_bankssts_thickness)
-zscore_plot_fs(postharmo_data, rh_bankssts_thickness)
-
-zscore_plot(preharmo_data, rh_caudalanteriorcingulate_thickness)
-zscore_plot_fs(postharmo_data, rh_caudalanteriorcingulate_thickness)
-
-zscore_plot(preharmo_data, rh_caudalmiddlefrontal_thickness)
-zscore_plot_fs(postharmo_data, rh_caudalmiddlefrontal_thickness)
-
-zscore_plot(preharmo_data, rh_cuneus_thickness)
-zscore_plot_fs(postharmo_data, rh_cuneus_thickness)
-
-zscore_plot(preharmo_data, rh_entorhinal_thickness)
-zscore_plot_fs(postharmo_data, rh_entorhinal_thickness)
-
-zscore_plot(preharmo_data, rh_fusiform_thickness)
-zscore_plot_fs(postharmo_data, rh_fusiform_thickness)
-
-zscore_plot(preharmo_data, rh_inferiorparietal_thickness)
-zscore_plot(postharmo_data, rh_inferiorparietal_thickness)
-zscore_plot_fs(postharmo_data, rh_inferiorparietal_thickness)
-
-zscore_plot(preharmo_data, rh_inferiortemporal_thickness)
-zscore_plot(postharmo_data, rh_inferiortemporal_thickness)
-zscore_plot_fs(postharmo_data, rh_inferiortemporal_thickness)
-
-zscore_plot(preharmo_data, rh_isthmuscingulate_thickness)
-zscore_plot(postharmo_data, rh_isthmuscingulate_thickness)
-zscore_plot_fs(postharmo_data, rh_isthmuscingulate_thickness)
-
-zscore_plot(preharmo_data, rh_lateraloccipital_thickness)
-zscore_plot(postharmo_data, rh_lateraloccipital_thickness)
-zscore_plot_fs(postharmo_data, rh_lateraloccipital_thickness)
-
-zscore_plot(preharmo_data, rh_lateralorbitofrontal_thickness)
-zscore_plot(postharmo_data, rh_lateralorbitofrontal_thickness)
-zscore_plot_fs(postharmo_data, rh_lateralorbitofrontal_thickness)
-
-zscore_plot(preharmo_data, rh_lingual_thickness)
-zscore_plot(postharmo_data, rh_lingual_thickness)
-zscore_plot_fs(postharmo_data, rh_lingual_thickness)
-
-zscore_plot(preharmo_data, rh_medialorbitofrontal_thickness)
-zscore_plot(postharmo_data, rh_medialorbitofrontal_thickness)
-zscore_plot_fs(postharmo_data, rh_medialorbitofrontal_thickness)
-
-zscore_plot(preharmo_data, rh_middletemporal_thickness)
-zscore_plot(postharmo_data, rh_middletemporal_thickness)
-zscore_plot_fs(postharmo_data, rh_middletemporal_thickness)
-
-zscore_plot(preharmo_data, rh_parahippocampal_thickness)
-zscore_plot(postharmo_data, rh_parahippocampal_thickness)
-zscore_plot_fs(postharmo_data, rh_parahippocampal_thickness)
-
-zscore_plot(preharmo_data, rh_paracentral_thickness)
-zscore_plot(postharmo_data, rh_paracentral_thickness)
-zscore_plot_fs(postharmo_data, rh_paracentral_thickness)
-
-zscore_plot(preharmo_data, rh_parsopercularis_thickness)
-zscore_plot(postharmo_data, rh_parsopercularis_thickness)
-zscore_plot_fs(postharmo_data, rh_parsopercularis_thickness)
-
-zscore_plot(preharmo_data, rh_parsorbitalis_thickness)
-zscore_plot(postharmo_data, rh_parsorbitalis_thickness)
-zscore_plot_fs(postharmo_data, rh_parsorbitalis_thickness)
-
-zscore_plot(preharmo_data, rh_parstriangularis_thickness)
-zscore_plot(postharmo_data, rh_parstriangularis_thickness)
-zscore_plot_fs(postharmo_data, rh_parstriangularis_thickness)
-
-zscore_plot(preharmo_data, rh_pericalcarine_thickness)
-zscore_plot(postharmo_data, rh_pericalcarine_thickness)
-zscore_plot_fs(postharmo_data, rh_pericalcarine_thickness)
-
-zscore_plot(preharmo_data, rh_postcentral_thickness)
-zscore_plot(postharmo_data, rh_postcentral_thickness)
-zscore_plot_fs(postharmo_data, rh_postcentral_thickness)
-
-zscore_plot(preharmo_data, rh_posteriorcingulate_thickness)
-zscore_plot(postharmo_data, rh_posteriorcingulate_thickness)
-zscore_plot_fs(postharmo_data, rh_posteriorcingulate_thickness)
-
-zscore_plot(preharmo_data, rh_precentral_thickness)
-zscore_plot(postharmo_data, rh_precentral_thickness)
-zscore_plot_fs(postharmo_data, rh_precentral_thickness)
-
-zscore_plot(preharmo_data, rh_precuneus_thickness)
-zscore_plot(postharmo_data, rh_precuneus_thickness)
-zscore_plot_fs(postharmo_data, rh_precuneus_thickness)
-
-zscore_plot(preharmo_data, rh_rostralanteriorcingulate_thickness)
-zscore_plot(postharmo_data, rh_rostralanteriorcingulate_thickness)
-zscore_plot_fs(postharmo_data, rh_rostralanteriorcingulate_thickness)
-
-zscore_plot(preharmo_data, rh_rostralmiddlefrontal_thickness)
-zscore_plot(postharmo_data, rh_rostralmiddlefrontal_thickness)
-zscore_plot_fs(postharmo_data, rh_rostralmiddlefrontal_thickness)
-
-zscore_plot(preharmo_data, rh_superiorfrontal_thickness)
-zscore_plot(postharmo_data, rh_superiorfrontal_thickness)
-zscore_plot_fs(postharmo_data, rh_superiorfrontal_thickness)
-
-zscore_plot(preharmo_data, rh_superiorparietal_thickness)
-zscore_plot(postharmo_data, rh_superiorparietal_thickness)
-zscore_plot_fs(postharmo_data, rh_superiorparietal_thickness)
-
-zscore_plot(preharmo_data, rh_superiortemporal_thickness)
-zscore_plot(postharmo_data, rh_superiortemporal_thickness)
-zscore_plot_fs(postharmo_data, rh_superiortemporal_thickness)
-
-zscore_plot(preharmo_data, rh_supramarginal_thickness)
-zscore_plot(postharmo_data, rh_supramarginal_thickness)
-zscore_plot_fs(postharmo_data, rh_supramarginal_thickness)
-
-zscore_plot(preharmo_data, rh_frontalpole_thickness)
-zscore_plot(postharmo_data, rh_frontalpole_thickness)
-zscore_plot_fs(postharmo_data, rh_frontalpole_thickness)
-
-zscore_plot(preharmo_data, rh_temporalpole_thickness)
-zscore_plot(postharmo_data, rh_temporalpole_thickness)
-zscore_plot_fs(postharmo_data, rh_temporalpole_thickness)
-
-zscore_plot(preharmo_data, rh_transversetemporal_thickness)
-zscore_plot(postharmo_data, rh_transversetemporal_thickness)
-zscore_plot_fs(postharmo_data, rh_transversetemporal_thickness)
-
-zscore_plot(preharmo_data, rh_insula_thickness)
-zscore_plot(postharmo_data, rh_insula_thickness)
-zscore_plot_fs(postharmo_data, rh_insula_thickness)
 
 
