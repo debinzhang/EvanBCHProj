@@ -1,0 +1,34 @@
+ANOVA summary for lh_bankssts_curvind:
+
+[1] Start to process raw data ...
+[1] Outlier Removal Result: row# before removal:5706; Row# after removal:5477; Outlier row removed:229
+[1] AVO summary for raw lh_bankssts_curvind before removing outlier:
+              Df Sum Sq Mean Sq F value Pr(>F)    
+Dataset        8  324.9   40.62   101.6 <2e-16 ***
+Residuals   5697 2278.3    0.40                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] 
+[1] AVO summary for raw lh_bankssts_curvind after removing outlier:
+              Df Sum Sq Mean Sq F value Pr(>F)    
+Dataset        8   59.8   7.474   67.76 <2e-16 ***
+Residuals   5468  603.2   0.110                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] 
+[1] 
+[1] Start to process harmonization data ...
+[1] Outlier Removal Result: row# before removal:5706; Row# after removal:5465; Outlier row removed:241
+[1] AVO summary for harmonization lh_bankssts_curvind before removing outlier:
+              Df Sum Sq Mean Sq F value Pr(>F)    
+Dataset        8  121.7  15.212   38.38 <2e-16 ***
+Residuals   5697 2258.1   0.396                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+[1] 
+[1] AVO summary for harmonization lh_bankssts_curvind after removing outlier:
+              Df Sum Sq Mean Sq F value Pr(>F)    
+Dataset        8   99.1  12.388   61.04 <2e-16 ***
+Residuals   5456 1107.3   0.203                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
