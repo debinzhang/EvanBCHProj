@@ -75,7 +75,7 @@ AovStats(t6, 'lh_superiorfrontal_thickness')
 
 -------------
   
-## The following is for plotting  
+## The following is for plotting
   
 remove_outlier <- function(data, feature, harmoData=FALSE) {
   featureAndDataset <- data %>% select(Dataset, Age, {{feature}})
