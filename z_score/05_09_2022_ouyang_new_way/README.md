@@ -26,6 +26,21 @@
 	`add_subjid_dataset_and_harmo_vars.py -s ./all_subjects_cortical_metrics_RH_thickness_09_02_2022.csv -i ./source_data_w_subjId.csv -o ./preHarmo.csv'`
    
    ./preHarmo.csv is the output file that contains both feature data and harmonization co-var data, such as "Sex", "Age", etc.
+   
+Note: 11/07/2020 update:
+
+We got new data from Boston Children Hospital and save them in `"09_15_data_w_pre_post_generated"`directory. Ccompared with the old data, two datasets are added: `"ABCD"` and `"NKI_Rockland"`. To add harmonization data, such as "scanner type", "Magnetic field of strength", "Sex", and "Age", Evan loads a new meta-data file, "ABCD-nonMRI.xlsx" which can the above info for "ABCD" only. I manually combined the "ABCD-nonMRI.xlsx" and "source_data_w_subjId.csv", and created "source_data_w_subjId_add_abcd.csv".
+
+I also modified `add_subjid_dataset_and_harmo_vars.py` and created `"add_subjid_dataset_and_harmo_vars_1.py"`, which does the same as `add_subjid_dataset_and_harmo_vars.py"` but is able to handle "ABCD" dataset. `"add_subjid_dataset_and_harmo_vars_1.py"` ignores `"NKI_Rockland"` because we do not have their corresponding "scanner type" and "Magnetic field of strength" info.
+
+Here is an example to run the new script:
+
+`mkdir 09_15_data_w_pre_post_generated;`
+
+`cd 09_15_data_w_pre_post_generated`
+
+`python3 ../add_subjid_dataset_and_harmo_vars_1.py -s ./all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022.csv -i ../source_data_w_subjId_add_abcd.csv -o ./all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv`
+
 	
 ### 2. Build harmonization data
 
