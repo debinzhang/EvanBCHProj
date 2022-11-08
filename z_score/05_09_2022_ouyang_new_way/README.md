@@ -32,6 +32,18 @@ Note: 11/07/2020 update:
 We got new data from Boston Children Hospital and save them in `"09_15_data_w_pre_post_generated"`directory. Ccompared with the old data, two datasets are added: `"ABCD"` and `"NKI_Rockland"`. To add harmonization data, such as "scanner type", "Magnetic field of strength", "Sex", and "Age", Evan loads a new meta-data file, "ABCD-nonMRI.xlsx" which can the above info for "ABCD" only. I manually combined the "ABCD-nonMRI.xlsx" and "source_data_w_subjId.csv", and created "source_data_w_subjId_add_abcd.csv".
 
 I also modified `add_subjid_dataset_and_harmo_vars.py` and created `"add_subjid_dataset_and_harmo_vars_1.py"`, which does the same as `add_subjid_dataset_and_harmo_vars.py"` but is able to handle "ABCD" dataset. `"add_subjid_dataset_and_harmo_vars_1.py"` ignores `"NKI_Rockland"` because we do not have their corresponding "scanner type" and "Magnetic field of strength" info.
+	
+### 2. Build harmonization data
+
+	Here we modified the harmonDataBuilder_1.py script from harmonization_Evan directory to generate post-harmonization data. We added dataset as part of neuroCombat co-vars, and we set "mean_only=True" while calling the neuroCombat function. The new script is called harmonDataBuilder_2.py. The following is an example of how to run the above commands (here we assume to original data is saved in ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv):	
+ 	 mkdir output_RH_thickness; 
+	 cd output_RH_thickness;
+	 python ../add_subjid_dataset_and_harmo_vars.py -s ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv -i ../source_data_w_subjId.csv -o ./preHarmo.csv
+	 python ../harmonDataBuilder_2.py -s . -f preHarmo.csv -p 1 -o PostHarmon_all.csv
+	 
+Note: 11/07/2020 update:
+
+To accommodate the above 11/07 ABCD dataset change, the harmonization script is modified accordingly. A new script, harmonDataBuilder_8_abcd.py, is created for that purpose. Compared with the previous harmonization script, it adds scanner_type as one of the "categorical_cols".
 
 Here is an example to run the new script:
 
@@ -41,14 +53,7 @@ Here is an example to run the new script:
 
 `python3 ../add_subjid_dataset_and_harmo_vars_1.py -s ./all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022.csv -i ../source_data_w_subjId_add_abcd.csv -o ./all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv`
 
-	
-### 2. Build harmonization data
-
-	Here we modified the harmonDataBuilder_1.py script from harmonization_Evan directory to generate post-harmonization data. We added dataset as part of neuroCombat co-vars, and we set "mean_only=True" while calling the neuroCombat function. The new script is called harmonDataBuilder_2.py. The following is an example of how to run the above commands (here we assume to original data is saved in ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv):	
- 	 mkdir output_RH_thickness; 
-	 cd output_RH_thickness;
-	 python ../add_subjid_dataset_and_harmo_vars.py -s ../data_w_mean/all_subjects_cortical_metrics_RH_gauscurv_09_02_2022.csv -i ../source_data_w_subjId.csv -o ./preHarmo.csv
-	 python ../harmonDataBuilder_2.py -s . -f preHarmo.csv -p 1 -o PostHarmon_all.csv
+`python ../harmonDataBuilder_8_abcd.py -f all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv -o all_subjects_cortical_metrics_LH_curvind_09_15_2022_postHarmo.csv`
 	 
 ### 3. Plot z_scroe with R Studio
     The commands to run R studio are saved in:
