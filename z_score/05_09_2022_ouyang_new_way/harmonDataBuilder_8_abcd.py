@@ -168,15 +168,15 @@ def main():
   # Create single output PostHarm file
   with open(args.output, "w") as f:
     colnamelist = postHarmonCombinedData.keys()
-    f.write("#,Dataset,Age,%s\n" % (','.join(colnamelist)))
+    f.write("#,Dataset,Age,Sex,%s\n" % (','.join(colnamelist)))
     for i in range(len(genderList0)):
       # build data list
       postDatalist = []
       for key in colnamelist:
         postDatalist.append(postHarmonCombinedData[key][i])
       # note: some data elements are number (float), so use map(str, list) to change them to string
-      f.write("%d,%s,%s,%s\n" % ((i+1),\
-        extractedDataDir['Dataset'][i], extractedDataDir['Age'][i],','.join(map(str, postDatalist))))
+      f.write("%d,%s,%s,%s,%s\n" % ((i+1),\
+        extractedDataDir['Dataset'][i], extractedDataDir['Age'][i], extractedDataDir['Sex'][i], ','.join(map(str, postDatalist))))
 
   print("Harmonization done: total %d records have been processed." % (len(genderList0)))
 
