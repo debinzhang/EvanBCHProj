@@ -144,7 +144,7 @@ draw_plot <- function(feature, option=1, sex=3) {
   u <- u + geom_point(size=0.5) + 
       geom_smooth(method="gam", formula = y ~ s(x, bs = "cs", k=5)) + 
       #geom_smooth(method = "loess") +
-      ggtitle(title) + ylab(feature)+ theme(plot.title = element_text(color="DarkBlue", size=15, family = "Courier", hjust=0.5))
+      ggtitle(title) + ylab(feature)+ xlab('Age') + theme(plot.title = element_text(color="DarkBlue", size=15, family = "Courier", hjust=0.5))
   u <- u + scale_x_continuous(breaks = seq(0,100, by =2))
   #u <- u + scale_x_discrete(breaks = seq(0,100, by =2))
   u
