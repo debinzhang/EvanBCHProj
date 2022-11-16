@@ -136,7 +136,7 @@ def main():
   covars =  {
               'batch': scannerList0,
               'gender': genderList0,
-              #'scannerType': scannerTypeList0
+              'scannerType': scannerTypeList0
               # 'dataset': datasetList0
             }
 
@@ -144,7 +144,7 @@ def main():
 
   # To specify names of the variables that are categorical:
   # categorical_cols = ['gender', 'dataset']
-  categorical_cols = ['gender']
+  categorical_cols = ['gender', 'scannerType']
 
   # To specify the name of the variable that encodes for the scanner/batch covariate:
   batch_col = 'batch'
