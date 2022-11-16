@@ -332,22 +332,24 @@ rh_thickness_region_list <- list("rh_bankssts_thickness",
                                  "rh_transversetemporal_thickness",
                                  "rh_insula_thickness")
 
+
+# lh_thickness
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byMeanThick=TRUE, 
                         region_list=lh_thickness_region_list, outfile="lh_thickness_anova.xlsx", IsLH=TRUE)
-
 gen_plot_all_region(lh_thickness_region_list, 3)
 
-
-
+# rh_thickness
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byMeanThick=TRUE, 
                         region_list=rh_thickness_region_list, outfile="rh_thickness_anova.xlsx", IsLH=FALSE)
-
 gen_plot_all_region(rh_thickness_region_list, 3)
 
 
 
 
 
+
+
+############### The following is test code ####################
 
 
 
