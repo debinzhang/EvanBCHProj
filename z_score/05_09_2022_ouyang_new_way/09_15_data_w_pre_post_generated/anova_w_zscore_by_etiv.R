@@ -10,8 +10,8 @@ setwd(wd)
 # data_raw <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
 # data_harmo <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
-# data_raw <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
-# data_harmo <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
+#data_raw <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
+#data_harmo <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
 # data_raw <- read.csv("all_subjects_cortical_metrics_LH_foldind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
 # data_harmo <- read.csv("all_subjects_cortical_metrics_LH_foldind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
@@ -262,10 +262,11 @@ gen_4_sheet_all_regions <- function(data_raw=NULL, data_harm=NULL, sex=3, byETIV
 
 gen_plot_all_region <- function(region_list, sex) {
   option_list <- list("_raw", "_raw_no_outlier", "_harmo", "_harmo_no_outlier")
+  sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
     for (option in 1:4) {
       draw_plot(region_name, option, sex)
-      file_name = paste(region_name, option_list[option], '.png', sep='')
+      file_name = paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
       print(paste("generating:", file_name))
       ggsave(file_name)
     }
@@ -625,54 +626,133 @@ rh_thicknessstd_region_list <- list("rh_bankssts_thicknessstd",
 
 
 ### 1. lh_curvind
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=lh_curvind_region_list, outfile="lh_curvind_anova.xlsx")
+gen_plot_all_region(lh_curvind_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=lh_curvind_region_list, outfile="lh_curvind_anova.xlsx")
+gen_plot_all_region(lh_curvind_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=lh_curvind_region_list, outfile="lh_curvind_anova.xlsx")
 gen_plot_all_region(lh_curvind_region_list, 3)
 
 ### 2. rh_curvind
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=rh_curvind_region_list, outfile="rh_curvind_anova.xlsx")
+gen_plot_all_region(rh_curvind_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=rh_curvind_region_list, outfile="rh_curvind_anova.xlsx")
+gen_plot_all_region(rh_curvind_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=rh_curvind_region_list, outfile="rh_curvind_anova.xlsx")
 gen_plot_all_region(rh_curvind_region_list, 3)
 
 ### 3. lh_foldind
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=lh_foldind_region_list, outfile="lh_foldind_anova.xlsx")
+gen_plot_all_region(lh_foldind_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=lh_foldind_region_list, outfile="lh_foldind_anova.xlsx")
+gen_plot_all_region(lh_foldind_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=lh_foldind_region_list, outfile="lh_foldind_anova.xlsx")
 gen_plot_all_region(lh_foldind_region_list, 3)
 
 ### 4. rh_foldind
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=rh_foldind_region_list, outfile="rh_foldind_anova.xlsx")
+gen_plot_all_region(rh_foldind_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=rh_foldind_region_list, outfile="rh_foldind_anova.xlsx")
+gen_plot_all_region(rh_foldind_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=rh_foldind_region_list, outfile="rh_foldind_anova.xlsx")
 gen_plot_all_region(rh_foldind_region_list, 3)
 
 
 ### 5. lh_gauscurv
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=lh_gauscurv_region_list, outfile="lh_gauscurv_anova.xlsx")
+gen_plot_all_region(lh_gauscurv_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=lh_gauscurv_region_list, outfile="lh_gauscurv_anova.xlsx")
+gen_plot_all_region(lh_gauscurv_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=lh_gauscurv_region_list, outfile="lh_gauscurv_anova.xlsx")
 gen_plot_all_region(lh_gauscurv_region_list, 3)
 
 ### 6. rh_gauscurv
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=rh_gauscurv_region_list, outfile="rh_gauscurv_anova.xlsx")
+gen_plot_all_region(rh_gauscurv_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=rh_gauscurv_region_list, outfile="rh_gauscurv_anova.xlsx")
+gen_plot_all_region(rh_gauscurv_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=rh_gauscurv_region_list, outfile="rh_gauscurv_anova.xlsx")
 gen_plot_all_region(rh_gauscurv_region_list, 3)
 
 
 ### 7. lh_meancurv
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=lh_meancurv_region_list, outfile="lh_meancurv_anova.xlsx")
+gen_plot_all_region(lh_meancurv_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=lh_meancurv_region_list, outfile="lh_meancurv_anova.xlsx")
+gen_plot_all_region(lh_meancurv_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=lh_meancurv_region_list, outfile="lh_meancurv_anova.xlsx")
 gen_plot_all_region(lh_meancurv_region_list, 3)
 
 ### 8. rh_meancurv
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=rh_meancurv_region_list, outfile="rh_meancurv_anova.xlsx")
+gen_plot_all_region(rh_meancurv_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=rh_meancurv_region_list, outfile="rh_meancurv_anova.xlsx")
+gen_plot_all_region(rh_meancurv_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=rh_meancurv_region_list, outfile="rh_meancurv_anova.xlsx")
 gen_plot_all_region(rh_meancurv_region_list, 3)
 
-
 ### 9. lh_thicknessstd
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=lh_thicknessstd_region_list, outfile="lh_thicknessstd_anova.xlsx")
+gen_plot_all_region(lh_thicknessstd_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=lh_thicknessstd_region_list, outfile="lh_thicknessstd_anova.xlsx")
+gen_plot_all_region(lh_thicknessstd_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=lh_thicknessstd_region_list, outfile="lh_thicknessstd_anova.xlsx")
 gen_plot_all_region(lh_thicknessstd_region_list, 3)
 
 ### 10. lh_thicknessstd
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE, 
+                        region_list=rh_thicknessstd_region_list, outfile="rh_thicknessstd_anova.xlsx")
+gen_plot_all_region(rh_thicknessstd_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+                        region_list=rh_thicknessstd_region_list, outfile="rh_thicknessstd_anova.xlsx")
+gen_plot_all_region(rh_thicknessstd_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE, 
                         region_list=rh_thicknessstd_region_list, outfile="rh_thicknessstd_anova.xlsx")
 gen_plot_all_region(rh_thicknessstd_region_list, 3)

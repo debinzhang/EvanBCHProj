@@ -6,8 +6,8 @@ library(XLConnect)
 
 wd <- "/Users/dzhang/Gits/EvanBCHProj/z_score/05_09_2022_ouyang_new_way/09_15_data_w_pre_post_generated"
 setwd(wd)
-# data_raw <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
-# data_harmo <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
+#data_raw <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
+#data_harmo <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
 data_raw <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
 data_harmo <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
@@ -252,10 +252,11 @@ gen_4_sheet_all_regions <- function(data_raw=NULL, data_harm=NULL, sex=3, byMean
 
 gen_plot_all_region <- function(region_list, sex) {
   option_list <- list("_raw", "_raw_no_outlier", "_harmo", "_harmo_no_outlier")
+  sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
     for (option in 1:4) {
       draw_plot(region_name, option, sex)
-      file_name = paste(region_name, option_list[option], '.png', sep='')
+      file_name = paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
       print(paste("generating:", file_name))
       ggsave(file_name)
     }
@@ -334,11 +335,29 @@ rh_thickness_region_list <- list("rh_bankssts_thickness",
 
 
 # lh_thickness
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byMeanThick=TRUE, 
+                        region_list=lh_thickness_region_list, outfile="lh_thickness_anova.xlsx", IsLH=TRUE)
+gen_plot_all_region(lh_thickness_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byMeanThick=TRUE, 
+                        region_list=lh_thickness_region_list, outfile="lh_thickness_anova.xlsx", IsLH=TRUE)
+gen_plot_all_region(lh_thickness_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byMeanThick=TRUE, 
                         region_list=lh_thickness_region_list, outfile="lh_thickness_anova.xlsx", IsLH=TRUE)
 gen_plot_all_region(lh_thickness_region_list, 3)
 
+
+
 # rh_thickness
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byMeanThick=TRUE, 
+                        region_list=rh_thickness_region_list, outfile="rh_thickness_anova.xlsx", IsLH=FALSE)
+gen_plot_all_region(rh_thickness_region_list, 1)
+
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byMeanThick=TRUE, 
+                        region_list=rh_thickness_region_list, outfile="rh_thickness_anova.xlsx", IsLH=FALSE)
+gen_plot_all_region(rh_thickness_region_list, 2)
+
 gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byMeanThick=TRUE, 
                         region_list=rh_thickness_region_list, outfile="rh_thickness_anova.xlsx", IsLH=FALSE)
 gen_plot_all_region(rh_thickness_region_list, 3)
