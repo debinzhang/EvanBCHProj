@@ -184,7 +184,7 @@ gender_title <- function(sex=3) {
 
 # option: 1->raw; 2->raw_wo_outlier; 3->harmo; 4->harmo_wo_outlier
 # sex: 1->Male; 2->Female; 3->All gender
-draw_plot <- function(feature, option=1, sex=3) {
+draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
   if (option==1) {
     suffix <- "raw"
     title <- paste("Raw", feature, gender_title(sex), sep=" ")
@@ -205,6 +205,13 @@ draw_plot <- function(feature, option=1, sex=3) {
   print(file_path)
   gg_data0 <- read.csv(file_path, stringsAsFactors = FALSE)
   gg_data <- gg_data0 %>% filter(Age !="")
+  
+  if (is_boxplot) {
+    v <- ggplot(data=gg_data, aes(x=Dataset, y=zscore, color=Dataset)) +
+         geom_boxplot() + ggtitle(title) + ylab(feature) + xlab('Dataset') +
+         theme(plot.title = element_text(color="DarkBlue", size=9, family = "Courier", hjust=0.5))
+    return(v)
+  }
 
   u <- ggplot(data=gg_data, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
   u <- u + geom_point(size=0.5) + 
@@ -267,6 +274,19 @@ gen_plot_all_region <- function(region_list, sex) {
     for (option in 1:4) {
       draw_plot(region_name, option, sex)
       file_name = paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
+      print(paste("generating:", file_name))
+      ggsave(file_name)
+    }
+  }
+}
+
+gen_boxplot_all_region <- function(region_list, sex) {
+  option_list <- list("_raw", "_raw_no_outlier", "_harmo", "_harmo_no_outlier")
+  sex_list <- list("_male", "_female", "_all")
+  for (region_name in region_list) {
+    for (option in 1:4) {
+      draw_plot(region_name, option, sex, is_boxplot=TRUE)
+      file_name = paste(region_name, option_list[option], sex_list[sex], '_boxplot', '.png', sep='')
       print(paste("generating:", file_name))
       ggsave(file_name)
     }
@@ -757,8 +777,11 @@ gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE,
                         region_list=rh_thicknessstd_region_list, outfile="rh_thicknessstd_anova.xlsx")
 gen_plot_all_region(rh_thicknessstd_region_list, 3)
 
+rh_thicknessstd_region_list_1 <- list("rh_bankssts_thicknessstd",
+                                    "rh_caudalanteriorcingulate_thicknessstd",
+                                    "rh_caudalmiddlefrontal_thicknessstd")
 
-
+gen_boxplot_all_region(rh_thicknessstd_region_list_1, 1)
 
 
 
