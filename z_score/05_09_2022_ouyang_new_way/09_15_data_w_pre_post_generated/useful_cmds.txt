@@ -1,0 +1,15 @@
+> python3 ../add_subjid_dataset_and_harmo_vars.py -s ./all_subjects_cortical_metrics_LH_curvind_09_15_2022.csv -i ../source_data_w_subjId.csv -o ./all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv
+
+> python ../harmonDataBuilder_8_abcd.py -f all_subjects_cortical_metrics_LH_foldind_09_15_2022_preHarmo.csv -o all_subjects_cortical_metrics_LH_foldind_09_15_2022_postHarmo.csv
+
+python3 ../harmonDataBuilder_8_abcd.py -f all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo.csv -o all_subjects_cortical_metrics_RH_thickness_09_15_2022_postHarmo_wo_scannertype.csv
+
+
+cmds to load lh.lobes.stats data (run inside BCH system):
+
+> cd /home/ch226110/11_27_22_data
+
+> cd /neuro/labs/grantlab/research/MRI_Predict_Age/ABCD/3NIFTI_FreeSurfer
+
+> find . -name lh.lobes.stats -exec cp --parents \{\} /home/ch226110/11_27_22_data/lh/ABCD  \;
+
