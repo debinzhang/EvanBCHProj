@@ -1,4 +1,3 @@
-
 # install.packages("XLConnect")
 library(ggplot2)
 library(dplyr)
@@ -205,48 +204,95 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     return(v)
   }
   
-  print("Debin 1")
-  print(head(gg_data))
-  print("Debin 1.01.1")
-  
-  fit4 <- vgam(get(feature) ~ s(Age, df = c(4, 2)), lms.bcn(zero = 1), data = gg_data, trace = TRUE)
-  print("Debin 1.1")
-  fitted.values <- data.frame(qtplot.lmscreg(fit4, percentiles = c(2,25,50,75,98))$fitted.values)
-  fitted.values[, 'Dataset'] <- gg_data[, 'Dataset']
-  fitted.values[, 'Age'] <- gg_data[, 'Age']
-  print("Debin 1.2")
-  print(head(fitted.values))
-  print("Debin 1.3")
-  fitted.values[, 'Sex'] <- gg_data[, 'Sex']
-  print(head(fitted.values))
-  print("Debin 1.4")
-  fitted.values[, feature] <- gg_data[, feature]
-  print(head(fitted.values))
-  print("Debin 2")
-  
-  dmelt <- melt(fitted.values, id.vars=c('Dataset', 'Age', 'Sex', feature))
-  print(head(dmelt))
-  print("....")
-  print(tail(dmelt))
+  # print("Debin 1")
+  # print(head(gg_data))
+  # print("Debin 1.01.1")
+  dmelt <- NULL
+  fitted.values <- NULL
+  fit4 <- NULL
+  draw_vgam <- tryCatch( 
+    {
+    print("dd 1...")
+    #fit4 <- vgam(get(feature) ~ s(Age, df = c(4, 2)), lms.bcn(zero = 1), data = gg_data, trace = TRUE)
+    fit4 <- vgam(get(feature) ~ s(Age, df = 2), lms.bcn(zero = 1), data = gg_data, trace = TRUE, 
+               na.action=na.omit,  eps = 1e-12)
+    print("dd 2...")
+    
+    print("dd finally 1")
+    print("dd finally 2")
+    print("Debin 1.1")
+    if (is.null(fit4)) {
+      print("fit4 is null")
+    }
+    fitted.values <- data.frame(qtplot.lmscreg(fit4, percentiles = c(2,25,50,75,98))$fitted.values)
+    fitted.values[, 'Dataset'] <- gg_data[, 'Dataset']
+    fitted.values[, 'Age'] <- gg_data[, 'Age']
+    print("Debin 1.2")
+    print(head(fitted.values))
+    print("Debin 1.3")
+    fitted.values[, 'Sex'] <- gg_data[, 'Sex']
+    print(head(fitted.values))
+    print("Debin 1.4")
+    fitted.values[, feature] <- gg_data[, feature]
+    print(head(fitted.values))
+    print("Debin 2")
+    
+    dmelt <- melt(fitted.values, id.vars=c('Dataset', 'Age', 'Sex', feature))
+    print(head(dmelt))
+    print("....")
+    print(tail(dmelt))
+    TRUE
+    }, 
+    # warning  = function(warn) {
+    #   print("dd warning....")
+    #   fit4 <- vgam(get(feature) ~ s(Age, df = 2), lms.bcn(zero = 1), data = gg_data, trace = TRUE, 
+    #                na.action=na.omit,  eps = 1e-12)
+    #   if (!is.null(fit4)) {
+    #     print("set fit in warning")
+    #   }
+    #   print(paste("MY_WARNING: ", warn))
+    # }, 
+    
+    error = function(err) {
+      print("dd err....")
+      print(paste("Skipping vgam: ", file_path))
+      print(paste("MY_ERROR: ", err))
+      FALSE
+    }
+  )
 
-  u <- ggplot(data=dmelt, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
+  print("Debin 2.0.1")
+  if (draw_vgam) {
+    print("Debin 2.1")
+    u <- ggplot(data=dmelt, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
+  } else {
+    print("Debin 2.2")
+    u <- ggplot(data=gg_data, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
+  }
   u <- u + geom_line(aes(Age, value, group=variable), color='black')
   u <- u + geom_point(size=0.5) + 
       #geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5)) + 
-      ggtitle(title) + ylab(feature)+ xlab('Age') 
+      ggtitle(title) + ylab(feature)+ xlab('Age')
   print("Debin 3")
   
   u<- u + theme(plot.title = element_text(color="DarkBlue", size=9, family = "Courier", hjust=0.5)) +
      theme(axis.text=element_text(size=5))
   print("Debin 4")
-  u <- u + scale_x_continuous(breaks = seq(0,100, by =2)) +
-    annotate(geom='text',
-             x = 92,
+  u <- u + scale_x_continuous(breaks = seq(0,100, by =2))
+  if (draw_vgam) {
+    print("Debin 5")
+    u <- u + annotate(geom='text',
+             x = 96,
              y = unlist(fitted.values[which.max(fitted.values[, 'Age']), c(1:5)]),
              label=c('2%', '25%', '50%', '75%', '98%'))
-  print("Debin 5")
+  }
   #u <- u + scale_x_discrete(breaks = seq(0,100, by =2))
-  u
+  if (draw_vgam) {
+    print("Debin 6")
+    u
+  }
+  print("Debin 7")
+  return(draw_vgam)
 }
 
 set_anova_skeleton <- function(wb, region_list) {
@@ -292,15 +338,56 @@ gen_4_sheet_all_regions <- function(data_raw=NULL, data_harm=NULL, sex=3, byMean
   print("All Done!!!")
 }
 
+gen_file_path <- function(feature, option, sex) {
+  if (option==1) {
+    suffix <- "raw"
+  } else if (option==2) {
+    suffix <- "raw_no_outlier"
+  } else if (option==3) {
+    suffix <- "harmo"
+  } else if (option==4) {
+    suffix <- "harmo_no_outlier"
+  } else {
+    print("invalid option")
+    return()
+  }
+  file_path <- paste(wd, '/', feature, '_', suffix, gender_suffix(sex), '.csv', sep = "")
+  return (file_path)
+}
+
 gen_plot_all_region <- function(region_list, sex) {
+  skip_count <- 0
+  created_file_count <- 0
+  skip_file_list <- list()
   option_list <- list("_raw", "_raw_no_outlier", "_harmo", "_harmo_no_outlier")
   sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
-    for (option in 1:4) {
-      draw_plot(region_name, option, sex)
-      file_name = paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
-      print(paste("generating:", file_name))
-      ggsave(file_name)
+#    for (option in 1:4) {
+    for (option in 2:4) {
+      draw_vgam <- draw_plot(region_name, option, sex)
+      print("Debin 10")
+      if (draw_vgam) {
+        created_file_count <- created_file_count + 1
+        print("Debin 11")
+        file_name <-paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
+        print(paste("generating:", file_name))
+        ggsave(file_name)
+      } else {
+        skip_file <- gen_file_path(region_name, option, sex)
+        skip_file_list <- append(skip_file_list, skip_file)
+        skip_count <- skip_count + 1
+      }
+    }
+  }
+  
+  if (created_file_count > 0 ) {
+    print(paste("There are ", skip_count, " plot files generated", sep = ''))
+  }
+  
+  if (skip_count > 0) {
+    print(paste("Failed to generate images for the following ", skip_count, " file due to vgram issue:", sep = ''))
+    for (i in 1:skip_count) {
+      print(paste("  ", skip_file_list[i]))
     }
   }
 }
@@ -317,6 +404,8 @@ gen_boxplot_all_region <- function(region_list, sex) {
     }
   }
 }
+
+draw_plot("lh_bankssts_thickness", option=1, sex=3, is_boxplot=FALSE)
 
 lh_thickness_region_list <- list("lh_bankssts_thickness",
                                  "lh_caudalanteriorcingulate_thickness",
@@ -352,6 +441,21 @@ lh_thickness_region_list <- list("lh_bankssts_thickness",
                                  "lh_temporalpole_thickness",
                                  "lh_transversetemporal_thickness",
                                  "lh_insula_thickness")
+
+
+
+
+lh_thickness_region_test_list <- list("lh_bankssts_thickness",
+                                 "lh_caudalanteriorcingulate_thickness",
+                                 "lh_caudalmiddlefrontal_thickness",
+                                 "lh_cuneus_thickness",
+                                 "lh_entorhinal_thickness",
+                                 "lh_fusiform_thickness",
+                                 "lh_inferiorparietal_thickness",
+                                 "lh_inferiortemporal_thickness",
+                                 "lh_isthmuscingulate_thickness",
+                                 "lh_lateraloccipital_thickness"
+                                 )
 
 rh_thickness_region_list <- list("rh_bankssts_thickness",
                                  "rh_caudalanteriorcingulate_thickness",

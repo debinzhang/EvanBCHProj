@@ -15,8 +15,10 @@ setwd(wd)
 # qtplot(fit4, percentiles = c(5,50,90,99), main = "Quantiles", las = 1, xlim = c(15, 90), ylab = "BMI", lwd = 2, lcol = 4) 
 
 dd1 <- bmi.nz
+dd2 <- bmi.nz[1:20, ]
 # fitted values from vgam 
-fit4 <- vgam(BMI ~ s(age, df = c(4, 2)), lms.bcn(zero = 1), data = bmi.nz, trace = TRUE)
+# fit4 <- vgam(BMI ~ s(age, df = c(4, 2)), lms.bcn(zero = 1), data = bmi.nz, trace = TRUE)
+fit4 <- vgam(BMI ~ s(age, df = 2), lms.bcn(zero = 1), data = dd2, trace = TRUE)
 fitted.values <- data.frame(qtplot.lmscreg(fit4, percentiles = c(5,50,90,99))$fitted.values)
 fitted.values[, 'age'] <- bmi.nz[, 'age']
 # melt data.frame
