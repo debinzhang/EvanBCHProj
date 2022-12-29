@@ -9,13 +9,15 @@ library(reshape2)
 library(reticulate)  # this package enable python in R
 
 use_python("/usr/local/bin/python3")
-source_python("harmonDataBuilder_9_abcd_R.py")
 
 wd <- "/Users/dzhang/Gits/EvanBCHProj/z_score/05_09_2022_ouyang_new_way/12_01_reorder_harmo/"
 setwd(wd)
+source_python("harmonDataBuilder_9_abcd_R_w_fixed_age.py")
+source_python("draw_plot.py")
+#source_python("harmonDataBuilder_9_abcd_R.py")
 
-# data_raw <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
-# data_harmo <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
+data_raw <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
+data_harmo <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
 #data_raw <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
 #data_harmo <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
@@ -41,9 +43,8 @@ setwd(wd)
 # data_raw <- read.csv("all_subjects_cortical_metrics_LH_thicknessstd_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
 # data_harmo <- read.csv("all_subjects_cortical_metrics_LH_thicknessstd_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
-data_raw <- read.csv("all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
-data_harmo <- read.csv("all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
-
+# data_raw <- read.csv("all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv", stringsAsFactors = TRUE)
+# data_harmo <- read.csv("all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_postHarmo_wo_scannertype.csv", stringsAsFactors = TRUE)
 
 
 adjustByMeanData <- function(data, feature) {
@@ -147,6 +148,9 @@ data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyH
     print(paste("Harmonization failed for", feature))
     return(FALSE)
   }
+  
+  # generate plot
+  rslt <- draw_plot(feature)
 
   data_harmo_no <- read.csv(outfile, stringsAsFactors = TRUE)
   data_harmo_z1 <- getRobustZScoreByDataset(data_harmo_no, feature, byETIV)
@@ -266,13 +270,14 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
   if (draw_vgam) {
     print("Debin 2.1")
     u <- ggplot(data=dmelt, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
+    u <- u + geom_line(aes(Age, value, group=variable), color='black')
   } else {
     print("Debin 2.2")
-    u <- ggplot(data=gg_data, aes(x=as.numeric(Age), y=get(feature), color=Dataset))
+    u <- ggplot(data=gg_data, aes(x=as.numeric(Age), y=get(feature), color=Dataset)) +
+      geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5))
   }
-  u <- u + geom_line(aes(Age, value, group=variable), color='black')
+
   u <- u + geom_point(size=0.5) + 
-    #geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5)) + 
     ggtitle(title) + ylab(feature)+ xlab('Age')
   print("Debin 3")
   
@@ -290,8 +295,8 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
   #u <- u + scale_x_discrete(breaks = seq(0,100, by =2))
   if (draw_vgam) {
     print("Debin 6")
-    u
   }
+  u
   print("Debin 7")
   return(draw_vgam)
 }
@@ -375,25 +380,23 @@ gen_plot_all_region <- function(region_list, sex) {
   sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
     #    for (option in 1:4) {
-    for (option in 2:4) {
+    for (option in 4:4) {
       draw_vgam <- draw_plot(region_name, option, sex)
-      print("Debin 10")
       if (draw_vgam) {
         created_file_count <- created_file_count + 1
-        print("Debin 11")
         file_name <-paste(region_name, option_list[option], sex_list[sex], '.png', sep='')
-        print(paste("generating:", file_name))
-        ggsave(file_name)
       } else {
         skip_file <- gen_file_path(region_name, option, sex)
         skip_file_list <- append(skip_file_list, skip_file)
         skip_count <- skip_count + 1
+        file_name <-paste(region_name, option_list[option], sex_list[sex], '_s', '.png', sep='')
       }
+      ggsave(file_name)
     }
   }
   
   if (created_file_count > 0 ) {
-    print(paste("There are ", skip_count, " plot files generated", sep = ''))
+    print(paste("There are ", created_file_count, " plot files generated", sep = ''))
   }
   
   if (skip_count > 0) {
@@ -775,7 +778,8 @@ gen_4_sheet_all_regions(data_raw, data_harmo, sex=1, byETIV=TRUE,
                         region_list=lh_curvind_region_list, outfile="lh_curvind_anova_male.xlsx")
 gen_plot_all_region(lh_curvind_region_list, 1)
 
-gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE, 
+  
+gen_4_sheet_all_regions(data_raw, data_harmo, sex=2, byETIV=TRUE,
                         region_list=lh_curvind_region_list, outfile="lh_curvind_anova_female.xlsx")
 gen_plot_all_region(lh_curvind_region_list, 2)
 
@@ -902,6 +906,12 @@ gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=TRUE,
                         region_list=rh_thicknessstd_region_list, outfile="rh_thicknessstd_anova.xlsx")
 gen_plot_all_region(rh_thicknessstd_region_list, 3)
 
+
+
+rh_thicknessstd_region_list_1 <- list("rh_bankssts_thicknessstd")
+rh_thicknessstd_region_list_2 <- list("rh_caudalanteriorcingulate_thicknessstd")
+
+gen_plot_all_region(rh_thicknessstd_region_list, 1)
 
 ###################### test cmds begin ######################
 
