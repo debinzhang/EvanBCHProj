@@ -110,7 +110,7 @@ def extractDataSet(filename):
 
     #generate age list:
     for i in range(len(extractedDataDir_['Age'])):
-      ageList_.append(math.ceil(float(extractedDataDir_['Age'][i])))
+      ageList_.append(math.floor(float(extractedDataDir_['Age'][i])))
 
     return ageList_, genderList_, scannerList_, scannerTypeList_, datasetList_, headline_, extractedDataDir_
 
@@ -118,7 +118,7 @@ def harmonize(srcfile, output, scanertype=False, dataset=False, Eb=True, Mean_on
   # eb: if False, each feature should be fit separately. True by default
   # parametric: should parametric adjustment be performed? True by default. (This cannot set to FALSE, otherwise, cause error)
   # mean_only: should only be means adjusted (no scaling)? False by default
-  # gen_plot: generate file for ploting. Its age are set to age's ceiling value so that can be used as discrete value. For now
+  # gen_plot: generate file for ploting. Its age are set to age's flooring value so that can be used as discrete value. For now
   # we only do that for harmonized data after outlier removal
   if not os.path.exists(srcfile):
     print("harmonize(): source file: %s does not exist!" % srcfile)
@@ -211,7 +211,7 @@ def harmonize(srcfile, output, scanertype=False, dataset=False, Eb=True, Mean_on
         extractedDataDir['Dataset'][i], extractedDataDir['Age'][i], extractedDataDir['Sex'][i], ','.join(map(str, postDatalist))))
 
   # the following code generate csv file for shaded plots. The only difference from the above created file is that
-  # the the age is integer (ceiling of age). This is required by seaborn and matplotlib python module
+  # the the age is integer (floor of age). This is required by seaborn and matplotlib python module
   if (gen_plot):
     # Create single output PostHarm file
     split_tup = os.path.splitext(output)
@@ -242,7 +242,7 @@ def harmonize(srcfile, output, scanertype=False, dataset=False, Eb=True, Mean_on
 
         # note: some data elements are number (float), so use map(str, list) to change them to string
         f.write("%d,%s,%s,%s,%s\n" % ((i+1),\
-          extractedDataDir['Dataset'][i], str(math.ceil(float(extractedDataDir['Age'][i]))), \
+          extractedDataDir['Dataset'][i], str(math.floor(float(extractedDataDir['Age'][i]))), \
           #extractedDataDir['Dataset'][i], extractedDataDir['Age'][i], \
             gender, ','.join(map(str, postDatalist))))
 

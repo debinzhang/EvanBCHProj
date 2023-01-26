@@ -13,7 +13,7 @@ def draw_shaded_plot(feature):
   df = pd.read_csv(plot_file_path)
 
   fig, ax = plt.subplots(figsize=a4_dims)
-  sns_lineplot = sns.lineplot(ax=ax, x='Age', y=feature, data=df.query("Sex != 'Unknown' & Age<=85"), hue='Sex')
+  sns_lineplot = sns.lineplot(ax=ax, x='Age', y=feature, data=df.query("Sex != 'Unknown'"), hue='Sex')
   plt.title("harmonized " + feature + " after outlier removal")
   fig_lineplot = sns_lineplot.get_figure()
   fig_lineplot.savefig(feature+'.png')
@@ -27,7 +27,7 @@ def draw_shade_hemisphere_plot(feature):
   df = pd.read_csv(plot_file_path)
 
   fig, ax = plt.subplots(figsize=a4_dims)
-  sns_lineplot = sns.lineplot(ax=ax, x='Age', y=feature, data=df.query("Sex != 'Unknown' & Age<=85"), hue='hemisphere')
+  sns_lineplot = sns.lineplot(ax=ax, x='Age', y=feature, data=df.query("Sex != 'Unknown'"), hue='hemisphere')
   plt.title("harmonized " + feature + " after outlier removal")
   fig_lineplot = sns_lineplot.get_figure()
   fig_lineplot.savefig(feature+'_hemisphere.png')

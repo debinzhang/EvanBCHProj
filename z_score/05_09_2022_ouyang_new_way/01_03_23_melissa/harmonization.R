@@ -17,7 +17,7 @@ source_python("harmonDataBuilder_9_R_age_key.py")
 source_python("categorize_data.py")
 
 gen_raw_harmo_data <- function() {
-  file_list <- list("raw_raw_new.csv")
+  file_list <- list("raw_raw_new_underscore.csv")
   
   for (file_path in file_list) {
     print(paste("working on :", file_path, sep = ''))
@@ -471,42 +471,42 @@ gen_hemisphere_plots<- function(feature_list) {
 }
 
 
-process_all_melissa <- function(clean_leftover=TRUE) {
-  region_list1 <- list("Left-Lateral-Ventricle",
-                      "Left-Inf-Lat-Vent",
-                      "Left-Cerebellum-White-Matter",
-                      "Left-Cerebellum-Cortex",
-                      "Left-Thalamus",
-                      "Left-Caudate",
-                      "Left-Putamen",
-                      "Left-Pallidum",
-                      "3rd-Ventricle",
-                      "4th-Ventricle",
-                      "Brain-Stem",
-                      "Left-Hippocampus",
-                      "Left-Amygdala",
+process_all_melissa <- function(clean_leftover=FALSE) {
+  region_list1 <- list("Left_Lateral_Ventricle",
+                      "Left_Inf_Lat_Vent",
+                      "Left_Cerebellum_White_Matter",
+                      "Left_Cerebellum_Cortex",
+                      "Left_Thalamus",
+                      "Left_Caudate",
+                      "Left_Putamen",
+                      "Left_Pallidum",
+                      "3rd_Ventricle",
+                      "4th_Ventricle",
+                      "Brain_Stem",
+                      "Left_Hippocampus",
+                      "Left_Amygdala",
                       "CSF",
-                      "Left-Accumbens-area",
-                      "Left-VentralDC",
-                      "Left-vessel",
-                      "Left-choroid-plexus",
-                      "Right-Lateral-Ventricle",
-                      "Right-Inf-Lat-Vent",
-                      "Right-Cerebellum-White-Matter",
-                      "Right-Cerebellum-Cortex",
-                      "Right-Thalamus",
-                      "Right-Caudate",
-                      "Right-Putamen",
-                      "Right-Pallidum",
-                      "Right-Hippocampus",
-                      "Right-Amygdala",
-                      "Right-Accumbens-area",
-                      "Right-VentralDC",
-                      "Right-vessel",
-                      "Right-choroid-plexus",
-                      "WM-hypointensities",
-                      "Optic-Chiasm",
-                      "CC_Posterior",
+                      "Left_Accumbens_area",
+                      "Left_VentralDC",
+                      "Left_vessel",
+                      "Left_choroid_plexus",
+                      "Right_Lateral_Ventricle",
+                      "Right_Inf_Lat_Vent",
+                      "Right_Cerebellum_White_Matter",
+                      "Right_Cerebellum_Cortex",
+                      "Right_Thalamus",
+                      "Right_Caudate",
+                      "Right_Putamen",
+                      "Right_Pallidum",
+                      "Right_Hippocampus",
+                      "Right_Amygdala",
+                      "Right_Accumbens_area",
+                      "Right_VentralDC",
+                      "Right_vessel",
+                      "Right_choroid_plexus",
+                      #"WM_hypointensities",
+                      "Optic_Chiasm",
+                      #"CC_Posterior",
                       "CC_Mid_Posterior",
                       "CC_Central",
                       "CC_Mid_Anterior",
@@ -524,8 +524,8 @@ process_all_melissa <- function(clean_leftover=TRUE) {
                       "SupraTentorialVol",
                       "SupraTentorialVolNotVent",
                       "MaskVol",
-                      "BrainSegVol-to-eTIV",
-                      "MaskVol-to-eTIV",
+                      "BrainSegVol_to_eTIV",
+                      "MaskVol_to_eTIV",
                       "lhSurfaceHoles",
                       "rhSurfaceHoles",
                       "SurfaceHoles")
@@ -551,16 +551,7 @@ process_all_melissa <- function(clean_leftover=TRUE) {
 
 
 
-
-
-
-
-
-
-
-
-
-
+#--------------------------------
 
 
 process_all <- function(draw_hemi_plot=TRUE, clean_leftover=TRUE) {
