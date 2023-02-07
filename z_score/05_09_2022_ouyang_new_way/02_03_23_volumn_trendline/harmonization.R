@@ -381,56 +381,59 @@ gen_boxplot_all_region <- function(region_list, sex) {
 }
 
 # this function draw plots that shows shaded left and right hemisphere comparision
-gen_hemisphere_plots<- function(feature_list) {
-  for (rh_feature in feature_list) {
-    # get feature name without hemsphere prefix. like 
-    # rh_entorhinal_thickness -> entorhinal_thickness
-    feature = substr(rh_feature, 4, nchar(rh_feature))
-    lh_feature = paste("lh_", feature, sep='')
-    data_lh <- read.csv(paste(lh_feature, "_harmo_no_all_plot.csv", sep=''), stringsAsFactors=TRUE)
-    data_rh <- read.csv(paste(rh_feature, "_harmo_no_all_plot.csv", sep=''), stringsAsFactors=TRUE)
-    
-    # remove "lh_MeanThickness_thickness" or "eTIV" from data_lh
-    # we need this step; otherwise, the left and right data table would have different column name
-    # then they cannot be combined
-    if ("lh_MeanThickness_thickness" %in% colnames(data_lh)) {
-      # drop lh_MeanThickness_thickness column
-      data_lh = subset(data_lh, select = -c(lh_MeanThickness_thickness))
-    }
-    
-    # rename lh_entorhinal_thickness to entorhinal_thickness
-    colnames(data_lh)[colnames(data_lh) == lh_feature] = feature
-    # add column "hemsphere" and set value "left"
-    data_lh["hemisphere"] = 'left'
-    
-    # remove "rh_MeanThickness_thickness" or "eTIV" from data_rh
-    if ("rh_MeanThickness_thickness" %in% colnames(data_rh)) {
-      # drop rh_MeanThickness_thickness column
-      data_rh = subset(data_rh, select = -c(rh_MeanThickness_thickness))
-    }
-    
-    # rename rh_entorhinal_thickness to entorhinal_thickness
-    colnames(data_rh)[colnames(data_rh) == rh_feature] = feature
-    # add column "hemsphere" and set value "right"
-    data_rh["hemisphere"] = 'right'
-    
-    # combined the left and right table
-    combined_data = rbind(data_lh, data_rh)
-    
-    outfile = paste(feature, "_hemisphere.csv", sep='')
-    write.csv(combined_data, outfile, row.names=FALSE, quote=FALSE)
-    
-    draw_shade_hemisphere_plot(feature)
+gen_hemisphere_plots<- function(rh_feature_list) {
+  file_types = c("_raw_no_all_plot", "_harmo_no_all_plot")
+  for (rh_feature in rh_feature_list) {
+    for (file_type in file_types) {
+      # get feature name without hemsphere prefix. like 
+      # rh_entorhinal_thickness -> entorhinal_thickness
+      feature = substr(rh_feature, 4, nchar(rh_feature))
+      lh_feature = paste("lh_", feature, sep='')
+      data_lh <- read.csv(paste(lh_feature, file_type, '.csv', sep=''), stringsAsFactors=TRUE)
+      data_rh <- read.csv(paste(rh_feature, file_type, '.csv', sep=''), stringsAsFactors=TRUE)
+      
+      # remove "lh_MeanThickness_thickness" or "eTIV" from data_lh
+      # we need this step; otherwise, the left and right data table would have different column name
+      # then they cannot be combined
+      if ("lh_MeanThickness_thickness" %in% colnames(data_lh)) {
+        # drop lh_MeanThickness_thickness column
+        data_lh = subset(data_lh, select = -c(lh_MeanThickness_thickness))
+      }
+      
+      # rename lh_entorhinal_thickness to entorhinal_thickness
+      colnames(data_lh)[colnames(data_lh) == lh_feature] = feature
+      # add column "hemsphere" and set value "left"
+      data_lh["hemisphere"] = 'left'
+      
+      # remove "rh_MeanThickness_thickness" or "eTIV" from data_rh
+      if ("rh_MeanThickness_thickness" %in% colnames(data_rh)) {
+        # drop rh_MeanThickness_thickness column
+        data_rh = subset(data_rh, select = -c(rh_MeanThickness_thickness))
+      }
+      
+      # rename rh_entorhinal_thickness to entorhinal_thickness
+      colnames(data_rh)[colnames(data_rh) == rh_feature] = feature
+      # add column "hemsphere" and set value "right"
+      data_rh["hemisphere"] = 'right'
+      
+      # combined the left and right table
+      combined_data = rbind(data_lh, data_rh)
+      
+      outfile = paste(feature, file_type, "_hemisphere.csv", sep='')
+      write.csv(combined_data, outfile, row.names=FALSE, quote=FALSE)
+      
+      draw_shade_hemisphere_plot(feature, file_type)
+    } 
   }
 }
 
 
 gen_raw_harmo_data <- function() {
-  file_list <- list("all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv")
+  file_list <- list(#"all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv"
                     # "all_subjects_cortical_metrics_LH_thicknessstd_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_LH_foldind_09_15_2022_preHarmo.csv",
-                    # "all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv",
+                    "all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv")
                     # "all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_LH_gauscurv_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_RH_foldind_09_15_2022_preHarmo.csv",
@@ -478,8 +481,8 @@ gen_raw_harmo_data <- function() {
 
 process_all <- function(draw_hemi_plot=TRUE, clean_leftover=FALSE) {
   gen_raw_harmo_data()
-  process_lh_curvind()
-  # process_rh_curvind(draw_hemi_plot)
+  #process_lh_curvind()
+  process_rh_curvind(draw_hemi_plot)
   categorize_data(clean_leftover)
 }
 
@@ -531,6 +534,57 @@ process_lh_curvind <- function() {
                           region_list=lh_curvind_region_list, outfile="lh_curvind_anova_age_as_key.xlsx", 
                           genTukeyHSD=TRUE, genShadedPlot=TRUE, zscore_threshold=3.5)
   gen_plot_all_region(lh_curvind_region_list, 3)
+}
+
+process_rh_curvind <- function(draw_hemi_plot) {
+  rh_curvind_region_list <- list("rh_bankssts_curvind",
+                                 "rh_caudalanteriorcingulate_curvind",
+                                 "rh_caudalmiddlefrontal_curvind",
+                                 "rh_cuneus_curvind",
+                                 "rh_entorhinal_curvind",
+                                 "rh_fusiform_curvind",
+                                 "rh_inferiorparietal_curvind",
+                                 "rh_inferiortemporal_curvind",
+                                 "rh_isthmuscingulate_curvind",
+                                 "rh_lateraloccipital_curvind",
+                                 "rh_lateralorbitofrontal_curvind",
+                                 "rh_lingual_curvind",
+                                 "rh_medialorbitofrontal_curvind",
+                                 "rh_middletemporal_curvind",
+                                 "rh_parahippocampal_curvind",
+                                 "rh_paracentral_curvind",
+                                 "rh_parsopercularis_curvind",
+                                 "rh_parsorbitalis_curvind",
+                                 "rh_parstriangularis_curvind",
+                                 "rh_pericalcarine_curvind",
+                                 "rh_postcentral_curvind",
+                                 "rh_posteriorcingulate_curvind",
+                                 "rh_precentral_curvind",
+                                 "rh_precuneus_curvind",
+                                 "rh_rostralanteriorcingulate_curvind",
+                                 "rh_rostralmiddlefrontal_curvind",
+                                 "rh_superiorfrontal_curvind",
+                                 "rh_superiorparietal_curvind",
+                                 "rh_superiortemporal_curvind",
+                                 "rh_supramarginal_curvind",
+                                 "rh_frontalpole_curvind",
+                                 "rh_temporalpole_curvind",
+                                 "rh_transversetemporal_curvind",
+                                 "rh_insula_curvind")
+
+  data_raw <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo_clean.csv",
+                       stringsAsFactors = TRUE)
+  data_harmo <- read.csv("all_subjects_cortical_metrics_RH_curvind_09_15_2022_postHarmo_clean.csv",
+                         stringsAsFactors = TRUE)
+  
+  gen_4_sheet_all_regions(data_raw, data_harmo, sex=3,
+                          region_list=rh_curvind_region_list, outfile="rh_curvind_anova_age_as_key.xlsx",
+                          genTukeyHSD=TRUE, genShadedPlot=TRUE)
+  gen_plot_all_region(rh_curvind_region_list, 3)
+  
+  if (draw_hemi_plot) {
+    gen_hemisphere_plots(rh_curvind_region_list)
+  }
 }
 
 

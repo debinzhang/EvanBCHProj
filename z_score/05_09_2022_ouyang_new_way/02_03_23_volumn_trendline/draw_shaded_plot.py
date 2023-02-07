@@ -93,16 +93,23 @@ def draw_shaded_plot_smooth(feature):
   plt.close()
   return True
 
-def draw_shade_hemisphere_plot(feature):
-  print("working on %s" % feature)
-  plot_file_path = feature+ "_hemisphere.csv"
+# file_type is one of {"_raw_no_all_plot", "_harmo_no_all_plot"}
+def draw_shade_hemisphere_plot(feature, file_type=''):
+  print("working on %s" % (feature+file_type))
+  plot_file_path = feature + file_type + "_hemisphere.csv"
   df = pd.read_csv(plot_file_path)
 
   fig, ax = plt.subplots(figsize=a4_dims)
   sns_lineplot = sns.lineplot(ax=ax, x='Age', y=feature, data=df.query("Sex != 'Unknown'"), hue='hemisphere')
-  plt.title("harmonized " + feature + " after outlier removal")
+  if ("raw" in file_type):
+    plt.title("Raw " + feature + " after outlier removal")
+  elif ("harmo" in file_type):
+    plt.title("Harmonized " + feature + " after outlier removal")
+  else:
+    print("Illegal file_type: %s" % file_type)
+    return
   fig_lineplot = sns_lineplot.get_figure()
-  fig_lineplot.savefig(feature+'_hemisphere.png')
+  fig_lineplot.savefig(feature + file_type + '_hemisphere.png')
   plt.clf()
   plt.close()
   return True
