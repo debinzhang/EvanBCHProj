@@ -26,7 +26,7 @@ def categorize_data(clean_leftover=False):
     os.makedirs(anova_dir)
     print("created folder: %s" % anova_dir )
   files = [f for f in glob.glob("*.xlsx") if ("lh_" in f or "rh_" in f) and \
-          ("anova_age_as_key.xlsx" in f) ]
+          ("anova_result.xlsx" in f) ]
   for f in files:
     dest = os.path.join(anova_dir, f)
     shutil.move(f, dest)

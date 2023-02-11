@@ -13,7 +13,7 @@ use_python("/usr/local/bin/python3")
 wd <- getwd()
 setwd(wd)
 source_python("draw_shaded_plot.py")
-source_python("harmonDataBuilder_9_R_age_key.py")
+source_python("harmonDataBuilder_10_R_scannertype_key.py")
 source_python("categorize_data.py")
 
 getRobustZScoreByDataset <- function(data, feature) {
@@ -64,7 +64,7 @@ sort_by_sex <- function(data, sex=3) {
 
 # sex: 1-> Male; 2->Female; 3->all
 data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyHSD=FALSE, 
-                low=-3.5, high=3.5, sex=3, wb=NULL, index=0, IsLH=TRUE, gen_shaded_plot=FALSE) {
+                low=-3.5, high=3.5, sex=3, wb=NULL, index=0, gen_shaded_plot=FALSE) {
   print(paste("working on ", feature, sep = ''))
   # step1: generation raw file
   data_raw_z <- getRobustZScoreByDataset(data_raw, feature)
@@ -294,7 +294,7 @@ gen_4_sheet_all_regions <- function(data_raw=NULL, data_harmo=NULL, sex=3,
   index <- 0
   for (region_name in region_list) {
     data_analyse(data_raw, data_harmo, region_name, TRUE, genTukeyHSD, -1.0*zscore_threshold, zscore_threshold,
-               sex, wb, index, IsLH=isLH, gen_shaded_plot=genShadedPlot)
+               sex, wb, index, gen_shaded_plot=genShadedPlot)
     index <- index + 1
   }
   
@@ -431,15 +431,15 @@ gen_hemisphere_plots<- function(rh_feature_list) {
 gen_raw_harmo_data <- function() {
   file_list <- list(#"all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo.csv"
                     # "all_subjects_cortical_metrics_LH_thicknessstd_09_15_2022_preHarmo.csv",
-                    # "all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo.csv",
+                    "all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_LH_foldind_09_15_2022_preHarmo.csv",
-                    "all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv")
+                    #"all_subjects_cortical_metrics_RH_curvind_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_RH_thicknessstd_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_LH_gauscurv_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_RH_foldind_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_LH_meancurv_09_15_2022_preHarmo.csv",
                     # "all_subjects_cortical_metrics_RH_gauscurv_09_15_2022_preHarmo.csv",
-                    # "all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo.csv",
+                    "all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo.csv")
                     # "all_subjects_cortical_metrics_RH_meancurv_09_15_2022_preHarmo.csv")
   
   for (file_path in file_list) {
@@ -481,8 +481,10 @@ gen_raw_harmo_data <- function() {
 
 process_all <- function(draw_hemi_plot=TRUE, clean_leftover=FALSE) {
   gen_raw_harmo_data()
-  #process_lh_curvind()
-  process_rh_curvind(draw_hemi_plot)
+  # process_lh_curvind()
+  # process_rh_curvind(draw_hemi_plot)
+  process_lh_thickness()
+  process_rh_thickness(draw_hemi_plot)
   categorize_data(clean_leftover)
 }
 
@@ -584,6 +586,102 @@ process_rh_curvind <- function(draw_hemi_plot) {
   
   if (draw_hemi_plot) {
     gen_hemisphere_plots(rh_curvind_region_list)
+  }
+}
+
+
+process_lh_thickness <- function() {
+  lh_thickness_region_list <- list("lh_bankssts_thickness",
+                                   "lh_caudalanteriorcingulate_thickness",
+                                   "lh_caudalmiddlefrontal_thickness",
+                                   "lh_cuneus_thickness",
+                                   "lh_entorhinal_thickness",
+                                   "lh_fusiform_thickness",
+                                   "lh_inferiorparietal_thickness",
+                                   "lh_inferiortemporal_thickness",
+                                   "lh_isthmuscingulate_thickness",
+                                   "lh_lateraloccipital_thickness",
+                                   "lh_lateralorbitofrontal_thickness",
+                                   "lh_lingual_thickness",
+                                   "lh_medialorbitofrontal_thickness",
+                                   "lh_middletemporal_thickness",
+                                   "lh_parahippocampal_thickness",
+                                   "lh_paracentral_thickness",
+                                   "lh_parsopercularis_thickness",
+                                   "lh_parsorbitalis_thickness",
+                                   "lh_parstriangularis_thickness",
+                                   "lh_pericalcarine_thickness",
+                                   "lh_postcentral_thickness",
+                                   "lh_posteriorcingulate_thickness",
+                                   "lh_precentral_thickness",
+                                   "lh_precuneus_thickness",
+                                   "lh_rostralanteriorcingulate_thickness",
+                                   "lh_rostralmiddlefrontal_thickness",
+                                   "lh_superiorfrontal_thickness",
+                                   "lh_superiorparietal_thickness",
+                                   "lh_superiortemporal_thickness",
+                                   "lh_supramarginal_thickness",
+                                   "lh_frontalpole_thickness",
+                                   "lh_temporalpole_thickness",
+                                   "lh_transversetemporal_thickness",
+                                   "lh_insula_thickness")
+
+  data_raw <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo_clean.csv", stringsAsFactors = TRUE)
+  data_harmo <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_postHarmo_clean.csv", stringsAsFactors = TRUE)
+  
+  gen_4_sheet_all_regions(data_raw, data_harmo, sex=3,
+                          region_list=lh_thickness_region_list, outfile="lh_thickness_anova_result.xlsx", 
+                          genTukeyHSD=TRUE, genShadedPlot=TRUE)
+  gen_plot_all_region(lh_thickness_region_list, 3)
+}
+
+
+process_rh_thickness <- function(draw_hemi_plot) {
+  rh_thickness_region_list <- list("rh_bankssts_thickness",
+                                   "rh_caudalanteriorcingulate_thickness",
+                                   "rh_caudalmiddlefrontal_thickness",
+                                   "rh_cuneus_thickness",
+                                   "rh_entorhinal_thickness",
+                                   "rh_fusiform_thickness",
+                                   "rh_inferiorparietal_thickness",
+                                   "rh_inferiortemporal_thickness",
+                                   "rh_isthmuscingulate_thickness",
+                                   "rh_lateraloccipital_thickness",
+                                   "rh_lateralorbitofrontal_thickness",
+                                   "rh_lingual_thickness",
+                                   "rh_medialorbitofrontal_thickness",
+                                   "rh_middletemporal_thickness",
+                                   "rh_parahippocampal_thickness",
+                                   "rh_paracentral_thickness",
+                                   "rh_parsopercularis_thickness",
+                                   "rh_parsorbitalis_thickness",
+                                   "rh_parstriangularis_thickness",
+                                   "rh_pericalcarine_thickness",
+                                   "rh_postcentral_thickness",
+                                   "rh_posteriorcingulate_thickness",
+                                   "rh_precentral_thickness",
+                                   "rh_precuneus_thickness",
+                                   "rh_rostralanteriorcingulate_thickness",
+                                   "rh_rostralmiddlefrontal_thickness",
+                                   "rh_superiorfrontal_thickness",
+                                   "rh_superiorparietal_thickness",
+                                   "rh_superiortemporal_thickness",
+                                   "rh_supramarginal_thickness",
+                                   "rh_frontalpole_thickness",
+                                   "rh_temporalpole_thickness",
+                                   "rh_transversetemporal_thickness",
+                                   "rh_insula_thickness")
+
+  data_raw <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo_clean.csv", stringsAsFactors = TRUE)
+  data_harmo <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_postHarmo_clean.csv", stringsAsFactors = TRUE)
+
+  gen_4_sheet_all_regions(data_raw, data_harmo, sex=3,
+                          region_list=rh_thickness_region_list, outfile="rh_thickness_anova_result.xlsx",,
+                          genTukeyHSD=TRUE, genShadedPlot=TRUE)
+  gen_plot_all_region(rh_thickness_region_list, 3)
+  
+  if (draw_hemi_plot) {
+    gen_hemisphere_plots(rh_thickness_region_list)
   }
 }
 
@@ -1052,98 +1150,6 @@ process_rh_thicknessstd <- function(draw_hemi_plot) {
   }
 }
 
-process_lh_thickness <- function() {
-  lh_thickness_region_list <- list("lh_bankssts_thickness",
-                                   "lh_caudalanteriorcingulate_thickness",
-                                   "lh_caudalmiddlefrontal_thickness",
-                                   "lh_cuneus_thickness",
-                                   "lh_entorhinal_thickness",
-                                   "lh_fusiform_thickness",
-                                   "lh_inferiorparietal_thickness",
-                                   "lh_inferiortemporal_thickness",
-                                   "lh_isthmuscingulate_thickness",
-                                   "lh_lateraloccipital_thickness",
-                                   "lh_lateralorbitofrontal_thickness",
-                                   "lh_lingual_thickness",
-                                   "lh_medialorbitofrontal_thickness",
-                                   "lh_middletemporal_thickness",
-                                   "lh_parahippocampal_thickness",
-                                   "lh_paracentral_thickness",
-                                   "lh_parsopercularis_thickness",
-                                   "lh_parsorbitalis_thickness",
-                                   "lh_parstriangularis_thickness",
-                                   "lh_pericalcarine_thickness",
-                                   "lh_postcentral_thickness",
-                                   "lh_posteriorcingulate_thickness",
-                                   "lh_precentral_thickness",
-                                   "lh_precuneus_thickness",
-                                   "lh_rostralanteriorcingulate_thickness",
-                                   "lh_rostralmiddlefrontal_thickness",
-                                   "lh_superiorfrontal_thickness",
-                                   "lh_superiorparietal_thickness",
-                                   "lh_superiortemporal_thickness",
-                                   "lh_supramarginal_thickness",
-                                   "lh_frontalpole_thickness",
-                                   "lh_temporalpole_thickness",
-                                   "lh_transversetemporal_thickness",
-                                   "lh_insula_thickness")
-  data_raw <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_preHarmo_clean.csv", stringsAsFactors = TRUE)
-  data_harmo <- read.csv("all_subjects_cortical_metrics_LH_thickness_09_15_2022_postHarmo_clean.csv", stringsAsFactors = TRUE)
-
-  gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=FALSE, 
-                          region_list=lh_thickness_region_list, outfile="lh_thickness_anova_all_age_as_key.xlsx", isLH=TRUE, 
-                          genTukeyHSD=TRUE, genShadedPlot=TRUE)
-  gen_plot_all_region(lh_thickness_region_list, 3)
-}
-
-process_rh_thickness <- function(draw_hemi_plot) {
-  rh_thickness_region_list <- list("rh_bankssts_thickness",
-                                   "rh_caudalanteriorcingulate_thickness",
-                                   "rh_caudalmiddlefrontal_thickness",
-                                   "rh_cuneus_thickness",
-                                   "rh_entorhinal_thickness",
-                                   "rh_fusiform_thickness",
-                                   "rh_inferiorparietal_thickness",
-                                   "rh_inferiortemporal_thickness",
-                                   "rh_isthmuscingulate_thickness",
-                                   "rh_lateraloccipital_thickness",
-                                   "rh_lateralorbitofrontal_thickness",
-                                   "rh_lingual_thickness",
-                                   "rh_medialorbitofrontal_thickness",
-                                   "rh_middletemporal_thickness",
-                                   "rh_parahippocampal_thickness",
-                                   "rh_paracentral_thickness",
-                                   "rh_parsopercularis_thickness",
-                                   "rh_parsorbitalis_thickness",
-                                   "rh_parstriangularis_thickness",
-                                   "rh_pericalcarine_thickness",
-                                   "rh_postcentral_thickness",
-                                   "rh_posteriorcingulate_thickness",
-                                   "rh_precentral_thickness",
-                                   "rh_precuneus_thickness",
-                                   "rh_rostralanteriorcingulate_thickness",
-                                   "rh_rostralmiddlefrontal_thickness",
-                                   "rh_superiorfrontal_thickness",
-                                   "rh_superiorparietal_thickness",
-                                   "rh_superiortemporal_thickness",
-                                   "rh_supramarginal_thickness",
-                                   "rh_frontalpole_thickness",
-                                   "rh_temporalpole_thickness",
-                                   "rh_transversetemporal_thickness",
-                                   "rh_insula_thickness")
-
-  data_raw <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_preHarmo_clean.csv", stringsAsFactors = TRUE)
-  data_harmo <- read.csv("all_subjects_cortical_metrics_RH_thickness_09_15_2022_postHarmo_clean.csv", stringsAsFactors = TRUE)
-
-  gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, byETIV=FALSE, 
-                          region_list=rh_thickness_region_list, outfile="rh_thickness_anova_all_age_as_key.xlsx", isLH=FALSE,
-                          genTukeyHSD=TRUE, genShadedPlot=TRUE)
-  gen_plot_all_region(rh_thickness_region_list, 3)
-  
-  if (draw_hemi_plot) {
-    gen_hemisphere_plots(rh_thickness_region_list)
-  }
-}
 
 process_all <- function(draw_hemi_plot=TRUE, clean_leftover=FALSE) {
   gen_raw_harmo_data()
