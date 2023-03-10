@@ -241,10 +241,29 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     u <- u + geom_line(aes(Age, value, group=variable), color='black')
   } else {
     # gg_data$predicted <- predict(gamlss(formula=get(feature)~Age,family=NO,data=gg_data))
-    model_5 <- gamlss(get(feature) ~ poly(Age, 5), data=gg_data, family=NO)
+    #model_5 <- gamlss(get(feature) ~ poly(Age, 5), data=gg_data, family=NO)
+    #model1 <- gamlss(data=gg_data, get(feature) ~ pb(Age, df=c(3), bs="cs"), family=NO)
+    model2 <- gamlss(data=gg_data, get(feature) ~ pb(Age, df=c(7), bs="cs"), family=NO)
+    model3 <- gamlss(data=gg_data, get(feature) ~ pb(Age, knots=c(6, 20, 60), bs="cs"), family=NO)
+    #model3 <- gamlss(data=gg_data, get(feature) ~ pb(Age, knots=c(1,3,5), bs="cs"), family=NO)
+    #model3 <- gamlss(data=gg_data, get(feature) ~ pb(Age, df=c(6,20, 60)), family=NO)
+    #model4 <- gamlss(data=gg_data, get(feature) ~ pb(Age, knots=c(0,1, 2, 3, 4, 5, 6, 10, 20, 60), bs="cs"), family=NO)
+
+    #data_trend1<-data.frame(gg_data$Age, fitted(model1))
+    data_trend2<-data.frame(gg_data$Age, fitted(model2))
+    data_trend3<-data.frame(gg_data$Age, fitted(model3))
+    #data_trend4<-data.frame(gg_data$Age, fitted(model4))
+
+    # print("--------------- 1")
+    # print(head(data_trend1))
+    # print("--------------- 2")
+
     model_18 <- gamlss(get(feature) ~ poly(Age, 18), data=gg_data, family=NO)
+    
+    #model_18 <- gamlss(get(feature) ~ pb(Age, df=1), data=gg_data, family="BCCG")
     #model <- gamlss(BrainSegVolNotVent ~ poly(Age, order), data=gg_data, family=NO)
-    gg_data$predicted_5 <- predict(model_5)
+    #gg_data$predicted_5 <- predict(model_5)
+    #gg_data$predicted_5 <- predict(model2)
     gg_data$predicted_18 <- predict(model_18)
     #predicted <- predict(model, newdata = gg_data)
     u <- ggplot(data=gg_data, aes(x=Age, y=get(feature), color=Dataset))
@@ -253,9 +272,13 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     #u <- u +  geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5))
     # u <- u +  geom_smooth(aes(color=NULL), size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=8), span=0.8)
 
-    u <- u +
-      #geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="blue") +
+    #u <- u +
+      #geom_line(data=gg_data, aes(x=Age, predicted_5), linewidth=2, color="blue")
       #geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red") +
+      #geom_line(data=data_trend4, aes(x=gg_data.Age, y=fitted.model4.), color="blue", linewidth=3) 
+      u <- u +geom_line(data=data_trend2, aes(x=gg_data.Age, y=fitted.model2.), color="green", linewidth=1) 
+      u <- u + geom_line(data=data_trend3, aes(x=gg_data.Age, y=fitted.model3.), color="blue", linewidth=1) + 
+
       geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red", size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=14), span=0.8)
       #geom_line(aes(x=Age, predicted_5), linewidth=0.5, color="green") 
       #geom_line(aes(x=Age, y=predicted_18), linewidth=0.5, color="purple")
@@ -362,8 +385,8 @@ gen_plot_all_region <- function(region_list, sex) {
   for (region_name in region_list) {
     # for (option in 1:4) {
     # for now we only care about post outlier removal and post harmonization with after outliers removed data 
-    #for (option in c(2,4)) {
-    for (option in 1:4) {
+    for (option in c(2,4)) {
+    #for (option in 1:4) {
       draw_vgam <- draw_plot(region_name, option, sex)
       if (draw_vgam) {
         created_file_count <- created_file_count + 1
@@ -472,11 +495,14 @@ gen_raw_harmo_data <- function() {
     data_raw <- read.csv(file_path, stringsAsFactors = FALSE)
     row_num_before <- nrow(data_raw)
     
+    # for patients under age 6 only
+    #data_raw_1 <- data_raw[ which(data_raw$Age!="" & data_raw$Age!="Siemens"  & as.numeric(data_raw$Age)<=6.0 &
+
     data_raw_1 <- data_raw[ which(data_raw$Age!="" & data_raw$Age!="Siemens"  &
                                     (data_raw$Sex==1 | data_raw$Sex==2 |
                                        data_raw$Sex=="M" | data_raw$Sex=="m" | data_raw$Sex=="F" |
                                        data_raw$Sex=="f")
-                                    & data_raw$Dataset!="NIH_PD"
+                                    #& data_raw$Dataset!="NIH_PD"
     ),  ]
 
     data_raw_1$Sex[ data_raw_1$Sex=='1' | data_raw_1$Sex=='m' | data_raw_1$Sex=='M' | data_raw_1$Sex=="Male" ] <- "M"
@@ -559,7 +585,7 @@ process_lh_curvind <- function() {
                                  "lh_temporalpole_curvind",
                                  "lh_transversetemporal_curvind",
                                  "lh_insula_curvind")
-  lh_curvind_region_list <- list("BrainSegVolNotVent", "eTIV")
+  lh_curvind_region_list <- list("BrainSegVolNotVent")
 
   data_raw <- read.csv("all_subjects_cortical_metrics_LH_curvind_09_15_2022_preHarmo_clean.csv",
                        stringsAsFactors = TRUE)

@@ -8,6 +8,8 @@ library(VGAM)
 library(reshape2)
 library(reticulate)  # this package enable python in R
 
+library(gamlss)
+
 use_python("/usr/local/bin/python3")
 
 wd <- getwd()
@@ -54,11 +56,13 @@ sort_by_sex <- function(data, sex=3) {
 
 # sex: 1-> Male; 2->Female; 3->all
 data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyHSD=FALSE, 
-                low=-3.5, high=3.5, sex=3, wb=NULL, index=0, IsLH=TRUE, gen_shaded_plot=FALSE) {
+                low=-3.5, high=3.5, sex=3, wb=NULL, index=0, gen_shaded_plot=FALSE) {
   print(paste("working on ", feature, sep = ''))
   # step1: generation raw file
   data_raw_z <- getRobustZScoreByDataset(data_raw, feature)
-  rawSubset <- data_raw_z %>% select(Dataset, Age, Sex, Scanner_type, Magnetic_field_of_strength, zscore, {{feature}})
+  print("Evan 1233")
+  rawSubset <- data_raw_z %>% dplyr::select(Dataset, Age, Sex, Scanner_type, Magnetic_field_of_strength, zscore, {{feature}})
+  print("Evan 1234")
   sexSubset <- sort_by_sex(rawSubset, sex)
   raw_aov_rst <- aov(zscore ~ Dataset, data = sexSubset)
   raw_Anova <- anova(lm(zscore ~ Dataset, data = sexSubset))
@@ -72,7 +76,7 @@ data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyH
   data_raw_z1 <- getRobustZScoreByDataset(data_raw, feature)
   rawNoOutlier <- rmOutlier(data_raw_z1, low, high)
   
-  rawNoOutlierSubset <- rawNoOutlier %>% select(Dataset, Age, Sex, Scanner_type, Magnetic_field_of_strength, zscore, {{feature}})
+  rawNoOutlierSubset <- rawNoOutlier %>% dplyr::select(Dataset, Age, Sex, Scanner_type, Magnetic_field_of_strength, zscore, {{feature}})
   
   sexSubset <- sort_by_sex(rawNoOutlierSubset, sex)
   rawNoOutlier_aov_rst <- aov(zscore ~ Dataset, data = sexSubset)
@@ -85,14 +89,15 @@ data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyH
 
     #generate plot file that has age round down to floor
     sexSubset_plot <- sexSubset
-    sexSubset_plot$Age <- floor(sexSubset_plot$Age)
+    #sexSubset_plot$Age <- floor(sexSubset_plot$Age)
+    sexSubset_plot$Age <- round(sexSubset_plot$Age, 0)
     outfile_plot <- paste(wd, '/', feature, '_raw_no', gender_suffix(sex), '_plot.csv', sep="")
     write.csv(sexSubset_plot, outfile_plot, row.names = FALSE, quote = FALSE)
   }
 
   # # step3: generating harmon file. Note: this harmon file is based on raw (before outlier removal) data 
   data_harmo_z <- getRobustZScoreByDataset(data_harmo, feature)
-  harmoSubset <- data_harmo_z %>% select(Dataset, Age, Sex, zscore, {{feature}})
+  harmoSubset <- data_harmo_z %>% dplyr::select(Dataset, Age, Sex, zscore, {{feature}})
   sexSubset <- sort_by_sex(harmoSubset, sex)
   harm_aov_rst <- aov(zscore ~ Dataset, data = sexSubset)
   harm_Anova <- anova(lm(zscore ~ Dataset, data = sexSubset))
@@ -126,7 +131,7 @@ data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyH
   data_harmo_no <- read.csv(outfile, stringsAsFactors = TRUE)
   data_harmo_z1 <- getRobustZScoreByDataset(data_harmo_no, feature)
   # harmoNoOutlier <- rmOutlier(data_harmo_z1, low, high)
-  harmoSubset <-  data_harmo_z1 %>% select(Dataset, Age, Sex, zscore, {{feature}})
+  harmoSubset <-  data_harmo_z1 %>% dplyr::select(Dataset, Age, Sex, zscore, {{feature}})
   #sexSubset <- sort_by_sex(harmoNoOutlierSubset, sex)
   sexSubset <- sort_by_sex(harmoSubset, sex)
   harmoNoOutlier_aov_rst <- aov(zscore ~ Dataset, data = sexSubset)
@@ -193,33 +198,33 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     return(v)
   }
   
-  dmelt <- NULL
-  fitted.values <- NULL
-  fit4 <- NULL
-  draw_vgam <- tryCatch( 
-    {
-      #fit4 <- vgam(get(feature) ~ s(Age, df = c(4, 2)), lms.bcn(zero = 1), data = gg_data, trace = TRUE)
-      fit4 <- vgam(get(feature) ~ s(Age, df = 2), lms.bcn(zero = 1), data = gg_data, trace = TRUE, 
-                    na.action=na.omit,  eps = 1e-16)
-      if (is.null(fit4)) {
-        print("fit4 is null")
-      }
-      fitted.values <- data.frame(qtplot.lmscreg(fit4, percentiles = c(1,25,50,75,99))$fitted.values)
-      fitted.values[, 'Dataset'] <- gg_data[, 'Dataset']
-      fitted.values[, 'Age'] <- gg_data[, 'Age']
-      fitted.values[, 'Sex'] <- gg_data[, 'Sex']
-      fitted.values[, feature] <- gg_data[, feature]
+  # dmelt <- NULL
+  # fitted.values <- NULL
+  # fit4 <- NULL
+  # draw_vgam <- tryCatch( 
+  #   {
+  #     #fit4 <- vgam(get(feature) ~ s(Age, df = c(4, 2)), lms.bcn(zero = 1), data = gg_data, trace = TRUE)
+  #     fit4 <- vgam(get(feature) ~ s(Age, df = 2), lms.bcn(zero = 1), data = gg_data, trace = TRUE, 
+  #                   na.action=na.omit,  eps = 1e-16)
+  #     if (is.null(fit4)) {
+  #       print("fit4 is null")
+  #     }
+  #     fitted.values <- data.frame(qtplot.lmscreg(fit4, percentiles = c(1,25,50,75,99))$fitted.values)
+  #     fitted.values[, 'Dataset'] <- gg_data[, 'Dataset']
+  #     fitted.values[, 'Age'] <- gg_data[, 'Age']
+  #     fitted.values[, 'Sex'] <- gg_data[, 'Sex']
+  #     fitted.values[, feature] <- gg_data[, feature]
       
-      dmelt <- melt(fitted.values, id.vars=c('Dataset', 'Age', 'Sex', feature))
-      TRUE
-    },
+  #     dmelt <- melt(fitted.values, id.vars=c('Dataset', 'Age', 'Sex', feature))
+  #     TRUE
+  #   },
     
-    error = function(err) {
-      print(paste("Skipping vgam: ", file_path))
-      print(paste("MY_ERROR: ", err))
-      FALSE
-    }
-  )
+  #   error = function(err) {
+  #     print(paste("Skipping vgam: ", file_path))
+  #     print(paste("MY_ERROR: ", err))
+  #     FALSE
+  #   }
+  # )
   
   draw_vgam <- FALSE
   
@@ -228,16 +233,35 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     u <- u + geom_point(size=0.5) + ggtitle(title) + ylab(feature)+ xlab('Age')
     u <- u + geom_line(aes(Age, value, group=variable), color='black')
   } else {
+    # scanner_type and Magnetic_field_of_strength maybe NA in gg_data that breaks gamlss. Remove these columns
+    gamlssSubset <- gg_data %>% dplyr::select(Dataset, Age, Sex, {{feature}})
+    # gg_data$predicted <- predict(gamlss(formula=get(feature)~Age,family=NO,data=gg_data))
+    model_5 <- gamlss(get(feature) ~ poly(Age, 5), data=gamlssSubset, family=NO)
+    #model_18 <- gamlss(get(feature) ~ poly(scale(Age), 18), data=gamlssSubset, family=NO)
+    model_18 <- gamlss(get(feature) ~ poly(Age, 18), data=gamlssSubset, family=NO)
+    #model <- gamlss(BrainSegVolNotVent ~ poly(Age, order), data=gg_data, family=NO)
+    gg_data$predicted_5 <- predict(model_5)
+    gg_data$predicted_18 <- predict(model_18)
+    #predicted <- predict(model, newdata = gg_data)    
     u <- ggplot(data=gg_data, aes(x=Age, y=get(feature), color=Dataset))
-    u <- u + geom_point(size=0.5) + geom_point(size=0.5) +
+    u <- u + geom_point(size=0.2) +
           ggtitle(title) + ylab(feature)+ xlab('Age')
-    u <- u +  geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5))
+    # u <- u +  geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=5))
+    #u <- u +  geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=8))
+
+    u <- u + 
+      geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="blue")
+      # geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red") +
+      # geom_line(aes(x=Age, predicted_5), linewidth=0.5, color="green") +
+      # geom_line(aes(x=Age, y=predicted_18), linewidth=0.5, color="purple")
   }
   
-  u <- u + theme(plot.title = element_text(color="DarkBlue", size=20, family = "Courier", hjust=0.5)) +
-    theme(axis.text.x=element_text(size=8), axis.text.y=element_text(size=12),
-          axis.title=element_text(size=15))
-  u <- u + theme(legend.position = c(0.90, 0.80), legend.background = element_rect(fill = "white", color = "black"))
+  u <- u + theme(plot.title = element_text(color="DarkBlue", size=10, family = "Courier", hjust=0.5)) +
+    theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=8),
+          axis.title=element_text(size=8))
+  u <- u + theme(legend.position = c(0.92, 0.81), legend.background = element_rect(fill = "white", color = "black"),
+            legend.text=element_text(size=4), legend.title=element_text(size=7), legend.key.size = unit(0.4, 'cm'))
+            #guides(color = guide_legend(override.aes = list(size = 0.1)))
   u <- u + scale_x_continuous(breaks = seq(0,100, by =2))
   if (draw_vgam) {
     u <- u + annotate(geom='text',
@@ -246,7 +270,8 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
                       label=c('1%', '25%', '50%', '75%', '99%'), size=3)
   }
   u
-  return(draw_vgam)
+  # return(draw_vgam)
+  return(TRUE)
 }
 
 
@@ -284,7 +309,7 @@ gen_4_sheet_all_regions <- function(data_raw=NULL, data_harmo=NULL, sex=3,
   index <- 0
   for (region_name in region_list) {
     data_analyse(data_raw, data_harmo, region_name, TRUE, genTukeyHSD, -1.0*zscore_threshold, zscore_threshold,
-               sex, wb, index, IsLH=isLH, gen_shaded_plot=genShadedPlot)
+               sex, wb, index, gen_shaded_plot=genShadedPlot)
     index <- index + 1
   }
   
@@ -328,9 +353,9 @@ gen_plot_all_region <- function(region_list, sex) {
   option_list <- list("_raw", "_raw_no", "_harmo", "_harmo_no")
   sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
-    # for (option in 1:4) {
+    for (option in 1:4) {
     # for now we only care about post outlier removal and post harmonization with after outliers removed data 
-    for (option in c(2,4)) {
+    #for (option in c(2,4)) {
       draw_vgam <- draw_plot(region_name, option, sex)
       if (draw_vgam) {
         created_file_count <- created_file_count + 1
@@ -430,6 +455,7 @@ gen_raw_harmo_data <- function() {
                                     (data_raw$Sex==1 | data_raw$Sex==2 |
                                        data_raw$Sex=="M" | data_raw$Sex=="m" | data_raw$Sex=="F" |
                                        data_raw$Sex=="f")
+                                       # & data_raw$Dataset!="BGSP"
     ),  ]
     print("Evan 1.1")
     data_raw_1$Sex[ data_raw_1$Sex=='1' | data_raw_1$Sex=='m' | data_raw_1$Sex=='M' | data_raw_1$Sex=="Male" ] <- "M"
@@ -457,7 +483,7 @@ gen_raw_harmo_data <- function() {
 }
 
 process_all_melissa <- function(clean_leftover=FALSE) {
-  region_list <- list("Left_Lateral_Ventricle",
+  region_list0 <- list("Left_Lateral_Ventricle",
                       "Left_Inf_Lat_Vent",
                       "Left_Cerebellum_White_Matter",
                       "Left_Cerebellum_Cortex",
@@ -516,8 +542,8 @@ process_all_melissa <- function(clean_leftover=FALSE) {
                       "SurfaceHoles",
                       "eTIV")
 
-  region_list_x <- list("lhCortexVol", "rhCortexVol")
-  region_list_y <- list("BrainSegVol")
+  region_list <- list("BrainSegVol", "CortexVol", "eTIV", "BrainSegVol_to_eTIV", "TotalGrayVol")
+  region_list_y <- list("Brain_Stem")
 
 
   gen_raw_harmo_data()
