@@ -236,7 +236,9 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     # scanner_type and Magnetic_field_of_strength maybe NA in gg_data that breaks gamlss. Remove these columns
     gamlssSubset <- gg_data %>% dplyr::select(Dataset, Age, Sex, {{feature}})
     # gg_data$predicted <- predict(gamlss(formula=get(feature)~Age,family=NO,data=gg_data))
-    model_5 <- gamlss(get(feature) ~ poly(Age, 5), data=gamlssSubset, family=NO)
+    #model_5 <- gamlss(get(feature) ~ poly((Age), 5), data=gamlssSubset, family=NO)
+    #model_5 <- gamlss(get(feature) ~ pb(Age), data=gamlssSubset, family=NO)
+    model_5 <- gamlss(get(feature) ~ s(Age), data=gamlssSubset, family=GA(),method=CG())
     #model_18 <- gamlss(get(feature) ~ poly(scale(Age), 18), data=gamlssSubset, family=NO)
     model_18 <- gamlss(get(feature) ~ poly(Age, 18), data=gamlssSubset, family=NO)
     #model <- gamlss(BrainSegVolNotVent ~ poly(Age, order), data=gg_data, family=NO)
@@ -250,10 +252,11 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     #u <- u +  geom_smooth(aes(color=NULL), method="gam", formula = y ~ s(x, bs = "cs", k=8))
 
     u <- u + 
-      geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="blue")
+      #geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="blue")
       # geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red") +
+      geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red", size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=14), span=0.8) 
       # geom_line(aes(x=Age, predicted_5), linewidth=0.5, color="green") +
-      # geom_line(aes(x=Age, y=predicted_18), linewidth=0.5, color="purple")
+      #geom_line(aes(x=Age, y=predicted_18), linewidth=0.5, color="purple")
   }
   
   u <- u + theme(plot.title = element_text(color="DarkBlue", size=10, family = "Courier", hjust=0.5)) +
@@ -542,7 +545,8 @@ process_all_melissa <- function(clean_leftover=FALSE) {
                       "SurfaceHoles",
                       "eTIV")
 
-  region_list <- list("BrainSegVol", "CortexVol", "eTIV", "BrainSegVol_to_eTIV", "TotalGrayVol")
+  region_list <- list("eTIV")
+  region_list <- list("BrainSegVol", "TotalGrayVol")
   region_list_y <- list("Brain_Stem")
 
 

@@ -16,7 +16,7 @@ draw_trendline_by_age <- function(feature, srcfile) {
   #u<- ggplot(data = data_raw, aes(x = Age, y=feature, group=Sex, color = Sex)) +
     #geom_smooth(method = "lm") +
     geom_point(alpha=0) + 
-    geom_smooth(aes(color=Sex), method="gam", formula = y ~ s(x, bs = "cs", k=5), linewidth=0.5) +
+    geom_smooth(aes(color=Sex), method="gam", formula = y ~ s(x, bs = "cs", k=8), linewidth=0.5) +
     labs(y=feature, x = "Age") + ggtitle(title) + 
     theme(legend.position = c(0.90, 0.90), legend.background = element_rect(fill = "white", color = "black"))
   
@@ -39,7 +39,7 @@ draw_trendline_by_hemisphere <- function(feature) {
   u<- ggplot(data = data_raw, aes(x = Age, y=get(feature), group=hemisphere, color = hemisphere)) +
     #geom_smooth(method = "lm") +
     #geom_point(alpha=0) + 
-    geom_smooth(aes(color=hemisphere), method="gam", formula = y ~ s(x, bs = "cs", k=5), linewidth=0.5) +
+    geom_smooth(aes(color=hemisphere), method="gam", formula = y ~ s(x, bs = "cs", k=8), linewidth=0.5) +
     labs(y=feature, x = "Age") + ggtitle(title) + 
     theme(legend.position = c(0.90, 0.90), legend.background = element_rect(fill = "white", color = "black"))
   
