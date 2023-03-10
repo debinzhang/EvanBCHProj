@@ -15,7 +15,7 @@ ggplot(data = df_mean, aes(x = age_range, y = eTIV)) +
   theme(plot.title = element_text(color="DarkBlue", size=12, family = "Courier", hjust=0.5)) +
   theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=8),
         axis.title=element_text(size=10)) +
-  ggtitle("eTIV by age group for data with outlier removed")ag
+  ggtitle("eTIV by age group for data with outlier removed")
 
 
 
