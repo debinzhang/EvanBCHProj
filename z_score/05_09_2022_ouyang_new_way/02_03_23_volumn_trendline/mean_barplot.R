@@ -6,7 +6,10 @@ if (is_google) {
   df0 <- read.csv("raw_data_from_google_sheet.csv")
 } else {
   #df0 <- read.csv("eTIV_raw_no_all.csv")
-  df0 <- read.csv("eTIV_raw_all.csv")
+  #df0 <- read.csv("eTIV_raw_all.csv")
+  #df0 <- read.csv("lh_rh_lobes_age_age_interval_clean_20230318.csv")
+  #df0 <- read.csv("lh_rh_lobes_age_clean_20230318.csv")
+  df0 <- read.csv("eTIV_raw_all_w_rockland.csv")
 }
 
 
@@ -22,13 +25,18 @@ rmOutlier <- function(data, low, high) {
   data_no_outlier
 }
 
-
-df1 <- subset(df0, (df0$Dataset=="ABCD" | df0$Dataset=="ABIDE_I" | df0$Dataset=="BCH" |
-                   df0$Dataset=="beijingEn" | df0$Dataset=="BGSP" | df0$Dataset=="DLBS" |
-                   df0$Dataset=="IXI_600" | df0$Dataset=="MGH" | df0$Dataset=="NIH_PD" |
-                   df0$Dataset=="OASIS_3") & df0$Age!="" & df0$eTIV!= "" &
-                   !is.na(as.numeric(df0$Age)) & !is.na(as.numeric(df0$eTIV)),
-                   select=c("Age", "Dataset", "eTIV"))
+if (is_google) {
+  df1 <- subset(df0, (df0$Dataset=="ABCD" | df0$Dataset=="ABIDE_I" | df0$Dataset=="BCH" |
+                     df0$Dataset=="beijingEn" | df0$Dataset=="BGSP" | df0$Dataset=="DLBS" |
+                     df0$Dataset=="IXI_600" | df0$Dataset=="MGH" | df0$Dataset=="NIH_PD" |
+                     df0$Dataset=="OASIS_3") & df0$Age!="" & df0$eTIV!= "" &
+                     !is.na(as.numeric(df0$Age)) & !is.na(as.numeric(df0$eTIV)),
+                     select=c("Age", "Dataset", "eTIV"))
+} else {
+  df1 <- subset(df0, df0$Age!="" & df0$eTIV!= "" &
+                  !is.na(as.numeric(df0$Age)) & !is.na(as.numeric(df0$eTIV)),
+                select=c("Age", "Dataset", "eTIV"))
+}
 
 print(paste("Total rows of table:", nrow(df1)))
 
@@ -79,9 +87,10 @@ u<- ggplot(data = df_mean, aes(x = age_grp_index, y = eTIV)) + geom_point(color=
 # output barplot
 t<- ggplot(data = df_mean, aes(x = age_range, y = eTIV)) +
   geom_col() +
+  #geom_bar(stat = "identity") +
   labs(x = "Age Range", y = "Mean eTIV") +
   theme(plot.title = element_text(color="DarkBlue", size=12, family = "Courier", hjust=0.5)) +
-  theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=8),
+  theme(axis.text.x=element_text(size=6, angle = 90, vjust = 0.5, hjust=1), axis.text.y=element_text(size=8),
         axis.title=element_text(size=10)) +
   ggtitle("eTIV mean by age group for data with outlier removed")
   if (is_google) {
@@ -131,7 +140,7 @@ tm <- ggplot(data = df_median, aes(x = age_range, y = eTIV)) +
   geom_col() +
   labs(x = "Age Range", y = "Median eTIV") +
   theme(plot.title = element_text(color="DarkBlue", size=12, family = "Courier", hjust=0.5)) +
-  theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=8),
+  theme(axis.text.x=element_text(size=6, angle=90, vjust = 0.5, hjust=1), axis.text.y=element_text(size=8),
         axis.title=element_text(size=10)) 
 
   if (is_google) {

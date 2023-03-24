@@ -1,5 +1,5 @@
 # Ignore .csv file
-.csv
+#.csv
 *.xlsx
 
 # Ignore .png file
