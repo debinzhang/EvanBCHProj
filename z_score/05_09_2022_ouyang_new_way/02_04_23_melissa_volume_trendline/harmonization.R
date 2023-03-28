@@ -56,7 +56,7 @@ sort_by_sex <- function(data, sex=3) {
 
 # sex: 1-> Male; 2->Female; 3->all
 data_analyse <- function(data_raw, data_harmo, feature, gen_csv=TRUE, gen_TukeyHSD=FALSE, 
-                low=-3.5, high=3.5, sex=3, wb=NULL, index=0, gen_shaded_plot=FALSE) {
+                low=-3.0, high=3.0, sex=3, wb=NULL, index=0, gen_shaded_plot=FALSE) {
   print(paste("working on ", feature, sep = ''))
   # step1: generation raw file
   data_raw_z <- getRobustZScoreByDataset(data_raw, feature)
@@ -236,9 +236,9 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
     # scanner_type and Magnetic_field_of_strength maybe NA in gg_data that breaks gamlss. Remove these columns
     gamlssSubset <- gg_data %>% dplyr::select(Dataset, Age, Sex, {{feature}})
     # gg_data$predicted <- predict(gamlss(formula=get(feature)~Age,family=NO,data=gg_data))
-    #model_5 <- gamlss(get(feature) ~ poly((Age), 5), data=gamlssSubset, family=NO)
+    model_5 <- gamlss(get(feature) ~ poly((Age), 5), data=gamlssSubset, family=NO)
     #model_5 <- gamlss(get(feature) ~ pb(Age), data=gamlssSubset, family=NO)
-    model_5 <- gamlss(get(feature) ~ s(Age), data=gamlssSubset, family=GA(),method=CG())
+    #model_5 <- gamlss(get(feature) ~ s(Age), data=gamlssSubset, family=GA(),method=CG())
     #model_18 <- gamlss(get(feature) ~ poly(scale(Age), 18), data=gamlssSubset, family=NO)
     model_18 <- gamlss(get(feature) ~ poly(Age, 18), data=gamlssSubset, family=NO)
     #model <- gamlss(BrainSegVolNotVent ~ poly(Age, order), data=gg_data, family=NO)
@@ -253,18 +253,19 @@ draw_plot <- function(feature, option=1, sex=3, is_boxplot=FALSE) {
 
     u <- u + 
       #geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="blue")
-      # geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red") +
-      geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red", size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=14), span=0.8) 
+      #geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red") +
+      #geom_smooth(data=gg_data, aes(x=Age, predicted_18), linewidth=0.5, color="red", size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=14), span=0.8) 
+      geom_smooth(data=gg_data, aes(x=Age, predicted_5), linewidth=0.5, color="red", size=0.5, method="gam", formula = y ~ s(x, bs = "cs", k=5), span=0.8) 
       # geom_line(aes(x=Age, predicted_5), linewidth=0.5, color="green") +
       #geom_line(aes(x=Age, y=predicted_18), linewidth=0.5, color="purple")
   }
   
-  u <- u + theme(plot.title = element_text(color="DarkBlue", size=10, family = "Courier", hjust=0.5)) +
-    theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=8),
-          axis.title=element_text(size=8))
-  u <- u + theme(legend.position = c(0.92, 0.81), legend.background = element_rect(fill = "white", color = "black"),
-            legend.text=element_text(size=4), legend.title=element_text(size=7), legend.key.size = unit(0.4, 'cm'))
-            #guides(color = guide_legend(override.aes = list(size = 0.1)))
+  u <- u + theme(plot.title = element_text(color="DarkBlue", size=11, family = "Courier", hjust=0.5)) +
+    theme(axis.text.x=element_text(size=6), axis.text.y=element_text(size=6),
+          axis.title=element_text(size=10))
+  u <- u + theme(legend.position = c(0.90, 0.81), legend.background = element_rect(fill = "white", color = "black"), 
+            legend.text=element_text(size=5), legend.title=element_text(size=7), legend.key.size = unit(0.4, 'cm'))
+            # + guides(color = guide_legend(override.aes = list(size = 0.3)))
   u <- u + scale_x_continuous(breaks = seq(0,100, by =2))
   if (draw_vgam) {
     u <- u + annotate(geom='text',
@@ -303,7 +304,7 @@ set_anova_skeleton <- function(wb, region_list) {
 gen_4_sheet_all_regions <- function(data_raw=NULL, data_harmo=NULL, sex=3,
                                     region_list=lh_thickness_region_list,
                                     outfile="unnamed_anova.xlsx", genTukeyHSD=FALSE,
-                                    genShadedPlot=FALSE, zscore_threshold=3.5) {
+                                    genShadedPlot=FALSE, zscore_threshold=3.0) {
   # generate skeleton anova output file
   wb <- loadWorkbook(outfile, create = TRUE)
   createSheet(wb, name="workSheet")
@@ -356,9 +357,9 @@ gen_plot_all_region <- function(region_list, sex) {
   option_list <- list("_raw", "_raw_no", "_harmo", "_harmo_no")
   sex_list <- list("_male", "_female", "_all")
   for (region_name in region_list) {
-    for (option in 1:4) {
+    #for (option in 1:4) {
     # for now we only care about post outlier removal and post harmonization with after outliers removed data 
-    #for (option in c(2,4)) {
+    for (option in c(1,2,4)) {
       draw_vgam <- draw_plot(region_name, option, sex)
       if (draw_vgam) {
         created_file_count <- created_file_count + 1
@@ -444,7 +445,8 @@ gen_hemisphere_plots<- function(feature_list) {
 
 
 gen_raw_harmo_data <- function() {
-  file_list <- list("raw_raw_new_underscore.csv")
+  #file_list <- list("raw_raw_new_underscore.csv")
+  file_list <- list("raw_raw_new_underscore_w_combined_ventricle.csv")
   
   for (file_path in file_list) {
     print(paste("working on :", file_path, sep = ''))
@@ -545,19 +547,24 @@ process_all_melissa <- function(clean_leftover=FALSE) {
                       "SurfaceHoles",
                       "eTIV")
 
-  region_list <- list("eTIV")
-  region_list <- list("BrainSegVol", "TotalGrayVol")
-  region_list_y <- list("Brain_Stem")
+  region_list_0 <- list("eTIV")
+  region_list_1 <- list("BrainSegVol", "TotalGrayVol")
+  region_list_2 <- list("Brain_Stem")
+  region_list <- list("BrainSegVol",
+                      "BrainSegVolNotVent",
+                      "Total_Ventricle")
 
 
   gen_raw_harmo_data()
 
-  data_raw <- read.csv("raw_raw_new_underscore_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
-  data_harmo <- read.csv("raw_raw_new_underscore_postharmo_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
+  #data_raw <- read.csv("raw_raw_new_underscore_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
+  data_raw <- read.csv("raw_raw_new_underscore_w_combined_ventricle_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
+  #data_harmo <- read.csv("raw_raw_new_underscore_postharmo_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
+  data_harmo <- read.csv("raw_raw_new_underscore_w_combined_ventricle_postharmo_clean.csv", stringsAsFactors = TRUE, check.names=FALSE)
   
   gen_4_sheet_all_regions(data_raw, data_harmo, sex=3, 
                           region_list=region_list, outfile="melissa_anova_scannertype_as_key.xlsx", 
-                          genTukeyHSD=TRUE, genShadedPlot=TRUE, zscore_threshold=3.5)
+                          genTukeyHSD=TRUE, genShadedPlot=TRUE, zscore_threshold=3.0)
   
   gen_plot_all_region(region_list, 3)
   
